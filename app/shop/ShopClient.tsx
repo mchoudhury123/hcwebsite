@@ -3,13 +3,11 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Filter, X, ShoppingCart, Check } from 'lucide-react'
+import { Search, Filter, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
 import Image from 'next/image'
 import { urlForImage } from '@/lib/sanity.image'
-import { useCartStore } from '@/lib/cart'
 import QuickAddButton from '@/components/QuickAddButton'
 
 interface ShopClientProps {
@@ -31,7 +29,6 @@ export default function ShopClient({ initialCollections, initialSizes, initialCo
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
-  const { add, isInCart } = useCartStore()
 
   // Filter state
   const [filters, setFilters] = useState<FilterState>({
@@ -231,9 +228,9 @@ export default function ShopClient({ initialCollections, initialSizes, initialCo
             <Filter size={16} className="mr-2" />
             Filters
             {hasActiveFilters && (
-              <Badge className="ml-2 bg-brand-maroon text-white">
+              <span className="ml-2 bg-brand-maroon text-white text-xs px-1.5 py-0.5 rounded-full">
                 {Object.values(filters).filter(v => Array.isArray(v) ? v.length > 0 : Boolean(v)).length}
-              </Badge>
+              </span>
             )}
           </Button>
           
@@ -383,12 +380,12 @@ export default function ShopClient({ initialCollections, initialSizes, initialCo
 
       {/* Products Grid */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {[...Array(8)].map((_, i) => (
             <div key={i} className="animate-pulse">
-              <div className="aspect-[3/4] bg-gray-200 rounded-lg mb-4"></div>
-              <div className="h-4 bg-gray-200 rounded mb-2"></div>
-              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              <div className="aspect-[3/4] bg-gray-100 mb-3"></div>
+              <div className="h-3 bg-gray-100 rounded mb-2 w-3/4"></div>
+              <div className="h-4 bg-gray-100 rounded w-1/3"></div>
             </div>
           ))}
         </div>
@@ -398,8 +395,8 @@ export default function ShopClient({ initialCollections, initialSizes, initialCo
           animate={{ opacity: 1 }}
           className="text-center py-16"
         >
-          <div className="w-24 h-24 bg-brand-maroon/10 rounded-full mx-auto mb-6 flex items-center justify-center">
-            <span className="text-brand-maroon text-4xl">🔍</span>
+          <div className="w-24 h-24 bg-gray-100 rounded-full mx-auto mb-6 flex items-center justify-center">
+            <Search size={32} className="text-gray-400" />
           </div>
           <h3 className="text-2xl font-semibold text-gray-900 mb-2">No products found</h3>
           <p className="text-gray-600 mb-6">
@@ -410,110 +407,95 @@ export default function ShopClient({ initialCollections, initialSizes, initialCo
           </Button>
         </motion.div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {products.map((product, index) => (
-            <motion.div
-              key={product._id}
-              className="group cursor-pointer"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: index * 0.1 }}
-              whileHover={{ y: -10 }}
-            >
-              {/* Product Image */}
-              <Link href={`/product/${product.slug.current}`}>
-                <div className="relative aspect-[3/4] bg-gradient-to-br from-brand-peach to-brand-cream rounded-lg shadow-elegant overflow-hidden mb-4">
-                  {/* Status Badges */}
-                  {product.compareAtPrice && product.compareAtPrice > product.price && (
-                    <div className="absolute top-3 left-3 bg-red-500 text-white text-xs px-2 py-1 rounded">
-                      SALE
-                    </div>
-                  )}
-                  {product.badges && product.badges.includes('new-arrival') && (
-                    <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-2 py-1 rounded">
-                      NEW
-                    </div>
-                  )}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          {products.map((product, index) => {
+            const hasStock = product.variants?.some((v: any) => v.stock > 0 && v.isActive)
+            const isOnSale = product.compareAtPrice && product.compareAtPrice > product.price
+            const savings = isOnSale ? (product.compareAtPrice - product.price) : 0
 
-                  {/* Product Image */}
-                  {product.images && product.images.length > 0 ? (
-                    <div className="relative w-full h-full">
+            return (
+              <motion.div
+                key={product._id}
+                className="group"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: Math.min(index * 0.05, 0.4) }}
+              >
+                {/* Product Image Container */}
+                <Link href={`/product/${product.slug.current}`} className="block">
+                  <div className="relative aspect-[3/4] bg-gray-50 overflow-hidden mb-3">
+                    {/* Badges */}
+                    <div className="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1.5">
+                      {!hasStock && (
+                        <span className="bg-yellow-400 text-gray-900 text-[10px] sm:text-xs font-semibold px-2 py-1 tracking-wide">
+                          Out of stock
+                        </span>
+                      )}
+                      {isOnSale && (
+                        <span className="bg-red-500 text-white text-[10px] sm:text-xs font-bold px-2 py-1 tracking-wide">
+                          SAVE&pound;{savings.toFixed(2)}
+                        </span>
+                      )}
+                      {product.badges && product.badges.includes('new-arrival') && (
+                        <span className="bg-black text-white text-[10px] sm:text-xs font-semibold px-2 py-1 tracking-wide">
+                          NEW
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Quick Add Overlay Button */}
+                    {hasStock && (
+                      <div className="absolute bottom-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <QuickAddButton product={product} variant="overlay" />
+                      </div>
+                    )}
+
+                    {/* Product Image */}
+                    {product.images && product.images.length > 0 ? (
                       <Image
                         src={urlForImage(product.images[0])}
                         alt={`${product.name} - ${product.collections?.[0]?.title || 'Abaya'}`}
                         fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                        sizes="(max-width: 768px) 50vw, 25vw"
                         priority={index < 4}
                       />
-                    </div>
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <div className="text-center">
-                        <div className="w-20 h-20 bg-brand-maroon/20 rounded-full mx-auto mb-3 flex items-center justify-center">
-                          <span className="text-brand-maroon text-3xl">👗</span>
-                        </div>
-                        <p className="text-brand-maroon font-medium text-sm">Abaya</p>
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                        <p className="text-gray-400 text-sm">No image</p>
                       </div>
-                    </div>
-                  )}
-                </div>
-              </Link>
-
-              {/* Product Info */}
-              <div className="text-center mb-4">
-                <Link href={`/product/${product.slug.current}`}>
-                  <h3 className="font-medium text-brand-dark mb-2 group-hover:text-brand-maroon transition-colors">
-                    {product.name}
-                  </h3>
-                </Link>
-
-                <div className="flex items-center justify-center gap-2 mb-3">
-                  {product.compareAtPrice && product.compareAtPrice > product.price && (
-                    <span className="text-gray-500 line-through text-sm">
-                      £{product.compareAtPrice.toFixed(2)}
-                    </span>
-                  )}
-                  <span className="font-semibold text-brand-maroon">
-                    £{product.price.toFixed(2)}
-                  </span>
-                </div>
-
-                
-
-                {/* Variant Info */}
-                {product.variants && product.variants.length > 0 && (
-                  <div className="flex items-center justify-center gap-2 mb-3">
-                    {product.variants
-                      .sort((a: any, b: any) => {
-                        // Sort sizes in ascending order (XS, S, M, L, XL, XXL)
-                        const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']
-                        const aIndex = sizeOrder.indexOf(a.size)
-                        const bIndex = sizeOrder.indexOf(b.size)
-                        if (aIndex === -1 && bIndex === -1) return a.size.localeCompare(b.size)
-                        if (aIndex === -1) return 1
-                        if (bIndex === -1) return -1
-                        return aIndex - bIndex
-                      })
-                      .slice(0, 3)
-                      .map((variant: any) => (
-                        <Badge key={variant._id} variant="outline" className="text-xs">
-                          {variant.size}
-                        </Badge>
-                      ))}
-                    {product.variants.length > 3 && (
-                      <Badge variant="outline" className="text-xs">
-                        +{product.variants.length - 3}
-                      </Badge>
                     )}
                   </div>
-                )}
-              </div>
+                </Link>
 
-              {/* Quick Add Button */}
-              <QuickAddButton product={product} />
-            </motion.div>
-          ))}
+                {/* Product Info */}
+                <div className="space-y-1.5">
+                  <Link href={`/product/${product.slug.current}`}>
+                    <h3 className="text-xs sm:text-sm font-medium tracking-wide uppercase text-gray-900 group-hover:text-brand-maroon transition-colors duration-200 line-clamp-2">
+                      {product.name}
+                    </h3>
+                  </Link>
+
+                  <div className="flex items-center gap-2">
+                    {isOnSale ? (
+                      <>
+                        <span className="text-sm sm:text-base font-semibold text-red-600">
+                          &pound;{product.price.toFixed(2)}
+                        </span>
+                        <span className="text-xs sm:text-sm text-gray-400 line-through">
+                          &pound;{product.compareAtPrice.toFixed(2)}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-sm sm:text-base font-semibold text-gray-900">
+                        &pound;{product.price.toFixed(2)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            )
+          })}
         </div>
       )}
     </div>
