@@ -83,7 +83,7 @@ export default function AboutClient() {
             </p>
           </motion.div>
         </div>
-        
+
         {/* Decorative Elements */}
         <div className="absolute top-10 left-10 opacity-20">
           <Star className="w-16 h-16 text-brand-maroon" />
@@ -114,20 +114,20 @@ export default function AboutClient() {
               </h2>
               <div className="space-y-6 text-lg text-brand-dark leading-relaxed">
                 <p>
-                  <span className="font-arabic text-xl">حبيبة</span> (Haybah) means "beloved" in Arabic, and that's exactly how we want every woman to feel when she wears our creations.
+                  <span className="font-arabic text-xl">حبيبة</span> (Haybah) means &ldquo;beloved&rdquo; in Arabic, and that&rsquo;s exactly how we want every woman to feel when she wears our creations.
                 </p>
                 <p>
                   Founded with a deep commitment to Islamic values and a passion for beautiful fashion, Haybah Collections began as a small dream to serve Muslim women who seek both modesty and style.
                 </p>
                 <p>
-                  We believe that dressing modestly doesn't mean compromising on beauty or fashion. Every Abaya we create is designed with love, respect, and an understanding of the cultural and religious significance of modest dress.
+                  We believe that dressing modestly doesn&rsquo;t mean compromising on beauty or fashion. Every Abaya we create is designed with love, respect, and an understanding of the cultural and religious significance of modest dress.
                 </p>
                 <p>
-                  As a growing business, we're committed to expanding our reach while maintaining the core values that make us unique: quality craftsmanship, respectful design, and a deep connection to our community.
+                  As a growing business, we&rsquo;re committed to expanding our reach while maintaining the core values that make us unique: quality craftsmanship, respectful design, and a deep connection to our community.
                 </p>
               </div>
             </div>
-            
+
             <div className="relative">
               <div className="aspect-square bg-gradient-to-br from-brand-peach to-brand-cream rounded-2xl shadow-elegant overflow-hidden">
                 <div className="relative w-full h-full">
@@ -141,7 +141,7 @@ export default function AboutClient() {
                   />
                 </div>
               </div>
-              
+
               {/* Decorative corner */}
               <div className="absolute -top-4 -right-4 w-24 h-24 bg-brand-maroon/10 rounded-full"></div>
               <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-brand-peach/30 rounded-full"></div>
@@ -218,7 +218,7 @@ export default function AboutClient() {
           <div className="relative">
             {/* Timeline Line */}
             <div className="absolute left-1/2 transform -translate-x-px w-1 bg-brand-maroon/20 h-full"></div>
-            
+
             <div className="space-y-12">
               {milestones.map((milestone, index) => (
                 <motion.div
@@ -233,7 +233,7 @@ export default function AboutClient() {
                 >
                   {/* Timeline Dot */}
                   <div className="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-brand-maroon rounded-full border-4 border-white shadow-lg z-10"></div>
-                  
+
                   {/* Content */}
                   <div className={`w-5/12 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
                     <div className="bg-gradient-to-br from-brand-peach to-brand-cream rounded-2xl p-6 shadow-elegant">
@@ -297,7 +297,7 @@ export default function AboutClient() {
               Join Our Journey
             </h2>
             <p className="text-xl text-brand-dark max-w-3xl mx-auto mb-12 leading-relaxed">
-              Be part of our growing community of women who embrace modesty, beauty, and Islamic values. 
+              Be part of our growing community of women who embrace modesty, beauty, and Islamic values.
               Discover our latest collections and experience the Haybah difference.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

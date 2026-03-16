@@ -1,245 +1,187 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { ArrowLeft, Shield, Eye, Lock, Database } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-cream to-white">
-      <div className="container-custom py-12">
-        {/* Header */}
-        <motion.div
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <Link 
+    <div className="min-h-screen bg-white">
+      {/* Header */}
+      <section className="border-b border-gray-100 py-12 sm:py-16">
+        <div className="container-custom text-center">
+          <Link
             href="/"
-            className="inline-flex items-center text-brand-maroon hover:text-brand-gold transition-colors mb-6"
+            className="inline-flex items-center text-xs tracking-wider uppercase text-gray-400 hover:text-brand-maroon transition-colors mb-6"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft className="w-3.5 h-3.5 mr-1.5" />
             Back to Home
           </Link>
-          
-          <h1 className="text-4xl md:text-5xl font-serif text-brand-dark mb-4">
+
+          <h1 className="text-3xl sm:text-4xl font-serif text-gray-900 mb-3">
             Privacy Policy
           </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-sm text-gray-500 max-w-lg mx-auto">
             Your privacy is important to us. Learn how we collect, use, and protect your personal information.
           </p>
-        </motion.div>
+        </div>
+      </section>
 
+      <div className="container-custom py-10 sm:py-14 max-w-3xl mx-auto">
         {/* Last Updated */}
-        <motion.div
-          className="bg-brand-maroon text-white text-center p-6 rounded-lg mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.1 }}
-        >
-          <p className="text-lg">
-            <strong>Last Updated:</strong> {new Date().toLocaleDateString('en-GB', { 
-              day: 'numeric', 
-              month: 'long', 
-              year: 'numeric' 
+        <div className="border-b border-gray-100 pb-6 mb-8">
+          <p className="text-xs text-gray-400 tracking-wider uppercase">
+            Last Updated: {new Date().toLocaleDateString('en-GB', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric'
             })}
           </p>
-        </motion.div>
+        </div>
 
         {/* Information We Collect */}
-        <motion.div
-          className="bg-white rounded-lg shadow-elegant p-8 mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          <div className="flex items-center mb-6">
-            <Eye className="w-8 h-8 text-brand-gold mr-3" />
-            <h2 className="text-2xl font-serif text-brand-dark">Information We Collect</h2>
-          </div>
-          
-          <div className="grid md:grid-cols-2 gap-8">
+        <div className="mb-10">
+          <h2 className="text-lg font-serif text-gray-900 mb-4">Information We Collect</h2>
+
+          <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-4">Personal Information</h3>
-              <ul className="space-y-3 text-gray-600">
-                <li className="flex items-start">
-                  <span className="w-2 h-2 bg-brand-gold rounded-full mt-2 mr-3 flex-shrink-0"></span>
+              <h3 className="text-sm font-medium text-gray-900 mb-3">Personal Information</h3>
+              <ul className="space-y-2 text-xs text-gray-500">
+                <li className="flex items-start gap-2">
+                  <span className="w-1 h-1 bg-brand-maroon rounded-full mt-1.5 flex-shrink-0"></span>
                   Name and contact details (email, phone, address)
                 </li>
-                <li className="flex items-start">
-                  <span className="w-2 h-2 bg-brand-gold rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                <li className="flex items-start gap-2">
+                  <span className="w-1 h-1 bg-brand-maroon rounded-full mt-1.5 flex-shrink-0"></span>
                   Payment information (processed securely by Stripe)
                 </li>
-                <li className="flex items-start">
-                  <span className="w-2 h-2 bg-brand-gold rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                <li className="flex items-start gap-2">
+                  <span className="w-1 h-1 bg-brand-maroon rounded-full mt-1.5 flex-shrink-0"></span>
                   Order history and preferences
                 </li>
-                <li className="flex items-start">
-                  <span className="w-2 h-2 bg-brand-gold rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                <li className="flex items-start gap-2">
+                  <span className="w-1 h-1 bg-brand-maroon rounded-full mt-1.5 flex-shrink-0"></span>
                   Communication preferences
                 </li>
               </ul>
             </div>
-            
+
             <div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-4">Technical Information</h3>
-              <ul className="space-y-3 text-gray-600">
-                <li className="flex items-start">
-                  <span className="w-2 h-2 bg-brand-gold rounded-full mt-2 mr-3 flex-shrink-0"></span>
+              <h3 className="text-sm font-medium text-gray-900 mb-3">Technical Information</h3>
+              <ul className="space-y-2 text-xs text-gray-500">
+                <li className="flex items-start gap-2">
+                  <span className="w-1 h-1 bg-brand-maroon rounded-full mt-1.5 flex-shrink-0"></span>
                   Device information and IP address
                 </li>
-                <li className="flex items-start">
-                  <span className="w-2 h-2 bg-brand-gold rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                <li className="flex items-start gap-2">
+                  <span className="w-1 h-1 bg-brand-maroon rounded-full mt-1.5 flex-shrink-0"></span>
                   Browser type and version
                 </li>
-                <li className="flex items-start">
-                  <span className="w-2 h-2 bg-brand-gold rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                <li className="flex items-start gap-2">
+                  <span className="w-1 h-1 bg-brand-maroon rounded-full mt-1.5 flex-shrink-0"></span>
                   Pages visited and time spent
                 </li>
-                <li className="flex items-start">
-                  <span className="w-2 h-2 bg-brand-gold rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                <li className="flex items-start gap-2">
+                  <span className="w-1 h-1 bg-brand-maroon rounded-full mt-1.5 flex-shrink-0"></span>
                   Cookies and similar technologies
                 </li>
               </ul>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* How We Use Information */}
-        <motion.div
-          className="bg-white rounded-lg shadow-elegant p-8 mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-        >
-          <div className="flex items-center mb-6">
-            <Database className="w-8 h-8 text-brand-gold mr-3" />
-            <h2 className="text-2xl font-serif text-brand-dark">How We Use Your Information</h2>
-          </div>
-          
-          <div className="grid md:grid-cols-2 gap-8">
+        <div className="mb-10">
+          <h2 className="text-lg font-serif text-gray-900 mb-4">How We Use Your Information</h2>
+
+          <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-4">Order Processing</h3>
-              <ul className="space-y-3 text-gray-600">
-                <li>• Process and fulfill your orders</li>
-                <li>• Send order confirmations and updates</li>
-                <li>• Handle returns and customer service</li>
-                <li>• Process payments securely</li>
+              <h3 className="text-sm font-medium text-gray-900 mb-3">Order Processing</h3>
+              <ul className="space-y-2 text-xs text-gray-500">
+                <li>Process and fulfill your orders</li>
+                <li>Send order confirmations and updates</li>
+                <li>Handle returns and customer service</li>
+                <li>Process payments securely</li>
               </ul>
             </div>
-            
+
             <div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-4">Communication</h3>
-              <ul className="space-y-3 text-gray-600">
-                <li>• Respond to your inquiries</li>
-                <li>• Send important service updates</li>
-                <li>• Provide customer support</li>
-                <li>• Send marketing communications (with consent)</li>
+              <h3 className="text-sm font-medium text-gray-900 mb-3">Communication</h3>
+              <ul className="space-y-2 text-xs text-gray-500">
+                <li>Respond to your inquiries</li>
+                <li>Send important service updates</li>
+                <li>Provide customer support</li>
+                <li>Send marketing communications (with consent)</li>
               </ul>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Data Protection */}
-        <motion.div
-          className="bg-white rounded-lg shadow-elegant p-8 mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-        >
-          <div className="flex items-center mb-6">
-            <Lock className="w-8 h-8 text-brand-gold mr-3" />
-            <h2 className="text-2xl font-serif text-brand-dark">How We Protect Your Data</h2>
-          </div>
-          
-          <div className="space-y-6">
+        <div className="mb-10">
+          <h2 className="text-lg font-serif text-gray-900 mb-4">How We Protect Your Data</h2>
+
+          <div className="space-y-4">
             <div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-3">Security Measures</h3>
-              <p className="text-gray-600">
-                We implement industry-standard security measures including SSL encryption, secure payment processing, 
+              <h3 className="text-sm font-medium text-gray-900 mb-1.5">Security Measures</h3>
+              <p className="text-xs text-gray-500 leading-relaxed">
+                We implement industry-standard security measures including SSL encryption, secure payment processing,
                 and regular security audits to protect your personal information.
               </p>
             </div>
-            
+
             <div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-3">Data Retention</h3>
-              <p className="text-gray-600">
-                We retain your personal information only for as long as necessary to provide our services, 
+              <h3 className="text-sm font-medium text-gray-900 mb-1.5">Data Retention</h3>
+              <p className="text-xs text-gray-500 leading-relaxed">
+                We retain your personal information only for as long as necessary to provide our services,
                 comply with legal obligations, and resolve disputes.
               </p>
             </div>
-            
+
             <div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-3">Third-Party Services</h3>
-              <p className="text-gray-600">
-                We use trusted third-party services like Stripe for payments and Sanity for content management. 
+              <h3 className="text-sm font-medium text-gray-900 mb-1.5">Third-Party Services</h3>
+              <p className="text-xs text-gray-500 leading-relaxed">
+                We use trusted third-party services like Stripe for payments and Sanity for content management.
                 These services have their own privacy policies and security measures.
               </p>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Your Rights */}
-        <motion.div
-          className="bg-white rounded-lg shadow-elegant p-8 mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-        >
-          <div className="flex items-center mb-6">
-            <Shield className="w-8 h-8 text-brand-gold mr-3" />
-            <h2 className="text-2xl font-serif text-brand-dark">Your Rights</h2>
-          </div>
-          
-          <div className="grid md:grid-cols-2 gap-8">
+        <div className="mb-10">
+          <h2 className="text-lg font-serif text-gray-900 mb-4">Your Rights</h2>
+
+          <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-4">Access & Control</h3>
-              <ul className="space-y-3 text-gray-600">
-                <li>• Access your personal information</li>
-                <li>• Update or correct your data</li>
-                <li>• Request deletion of your data</li>
-                <li>• Opt-out of marketing communications</li>
+              <h3 className="text-sm font-medium text-gray-900 mb-3">Access & Control</h3>
+              <ul className="space-y-2 text-xs text-gray-500">
+                <li>Access your personal information</li>
+                <li>Update or correct your data</li>
+                <li>Request deletion of your data</li>
+                <li>Opt-out of marketing communications</li>
               </ul>
             </div>
-            
+
             <div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-4">Contact Us</h3>
-              <p className="text-gray-600 mb-4">
-                If you have any questions about this Privacy Policy or want to exercise your rights, 
-                please contact us:
+              <h3 className="text-sm font-medium text-gray-900 mb-3">Contact Us</h3>
+              <p className="text-xs text-gray-500 mb-3">
+                If you have any questions about this Privacy Policy or want to exercise your rights,
+                please contact us.
               </p>
-              <div className="bg-brand-cream/30 p-4 rounded-lg">
-                <p className="text-sm text-brand-maroon font-medium">
-                  📧 Email: privacy@haybahcollections.co.uk
-                </p>
-                <p className="text-sm text-brand-maroon font-medium mt-2">
-                  📍 Address: [Your Business Address]
-                </p>
-              </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Contact Section */}
-        <motion.div
-          className="text-center p-8 bg-brand-maroon text-white rounded-lg"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-        >
-          <h3 className="text-2xl font-serif mb-4">Questions About Privacy?</h3>
-          <p className="mb-6">
-            We're committed to transparency and protecting your privacy. 
-            Contact us if you need any clarification.
-          </p>
+        {/* Contact */}
+        <div className="border-t border-gray-100 pt-8 text-center">
+          <p className="text-sm text-gray-500 mb-4">Questions about privacy?</p>
           <Link
             href="/contact"
-            className="inline-block bg-brand-gold text-brand-dark px-8 py-3 rounded-full font-medium hover:bg-white transition-colors"
+            className="inline-block bg-brand-maroon hover:bg-brand-burgundy text-white text-xs tracking-[0.15em] uppercase px-6 py-3 transition-colors"
           >
             Contact Us
           </Link>
-        </motion.div>
+        </div>
       </div>
     </div>
   )

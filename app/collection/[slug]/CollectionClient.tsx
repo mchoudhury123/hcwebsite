@@ -6,6 +6,8 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import QuickAddButton from '@/components/QuickAddButton'
 import { urlForImage } from '@/lib/sanity.image'
+import ProductRating from '@/components/ProductRating'
+import WishlistButton from '@/components/WishlistButton'
 
 interface CollectionClientProps {
   collection: any
@@ -14,84 +16,64 @@ interface CollectionClientProps {
 
 export default function CollectionClient({ collection, products }: CollectionClientProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-cream to-brand-peach">
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative h-96 bg-gradient-to-r from-brand-maroon to-brand-burgundy">
+      <section className="relative py-16 sm:py-20 bg-gray-950">
         {collection.heroImage && (
           <div className="absolute inset-0">
             <Image
               src={urlForImage(collection.heroImage, 1200, 600)}
-              alt={`${collection.title} collection hero image`}
+              alt={`${collection.title} collection`}
               fill
-              className="object-cover opacity-30"
+              className="object-cover opacity-25"
               sizes="100vw"
               priority
             />
           </div>
         )}
-        <div className="relative z-10 flex items-center justify-center h-full">
-          <div className="text-center text-white">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
+        <div className="relative z-10 container-custom text-center">
+          <motion.h1
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-3xl sm:text-4xl font-serif text-white mb-3"
+          >
+            {collection.title}
+          </motion.h1>
+          {collection.description && (
+            <motion.p
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-5xl font-playfair font-bold mb-4"
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="text-sm text-white/70 max-w-lg mx-auto"
             >
-              {collection.title}
-            </motion.h1>
-            {collection.description && (
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-xl max-w-2xl mx-auto"
-              >
-                {collection.description}
-              </motion.p>
-            )}
-          </div>
+              {collection.description}
+            </motion.p>
+          )}
         </div>
       </section>
 
-      {/* Products Grid */}
-      <section className="section-padding bg-white">
+      {/* Products */}
+      <section className="py-10 sm:py-14">
         <div className="container-custom">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-3xl font-playfair font-bold text-brand-maroon mb-2">
-                {collection.title}
-              </h2>
-              <p className="text-gray-600">
-                {products.length} product{products.length !== 1 ? 's' : ''} in this collection
+              <p className="text-sm text-gray-500">
+                {products.length} product{products.length !== 1 ? 's' : ''}
               </p>
             </div>
-            <Link
-              href="/shop"
-              className="text-brand-maroon hover:text-brand-burgundy transition-colors"
-            >
-              View All Products →
+            <Link href="/shop" className="text-xs tracking-wider uppercase text-gray-400 hover:text-brand-maroon transition-colors">
+              View All &rarr;
             </Link>
           </div>
 
           {products.length === 0 ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center py-16"
-            >
-              <div className="w-24 h-24 bg-gray-100 rounded-full mx-auto mb-6 flex items-center justify-center">
-                <span className="text-gray-400 text-4xl">&#128087;</span>
-              </div>
-              <h3 className="text-2xl font-semibold text-gray-900 mb-2">
-                No products found
-              </h3>
-              <p className="text-gray-600 mb-6">
-                This collection is currently empty. Check back soon for new arrivals!
-              </p>
-              <Button asChild className="bg-brand-maroon hover:bg-brand-maroon/90 text-white">
+            <div className="text-center py-16">
+              <p className="text-sm text-gray-500 mb-4">This collection is currently empty.</p>
+              <Button asChild className="bg-brand-maroon hover:bg-brand-burgundy text-white text-xs tracking-wider uppercase">
                 <Link href="/shop">Browse All Products</Link>
               </Button>
-            </motion.div>
+            </div>
           ) : (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {products.map((product: any, index: number) => {
@@ -107,10 +89,8 @@ export default function CollectionClient({ collection, products }: CollectionCli
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: Math.min(index * 0.05, 0.4) }}
                   >
-                    {/* Product Image Container */}
                     <Link href={`/product/${product.slug.current}`} className="block">
                       <div className="relative aspect-[3/4] bg-gray-50 overflow-hidden mb-3">
-                        {/* Badges */}
                         <div className="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1.5">
                           {!hasStock && (
                             <span className="bg-yellow-400 text-gray-900 text-[10px] sm:text-xs font-semibold px-2 py-1 tracking-wide">
@@ -129,14 +109,15 @@ export default function CollectionClient({ collection, products }: CollectionCli
                           )}
                         </div>
 
-                        {/* Quick Add Overlay Button */}
+                        {/* Wishlist Button */}
+                        <WishlistButton product={product} imageUrl={product.images?.[0] ? urlForImage(product.images[0]) : ''} />
+
                         {hasStock && (
                           <div className="absolute bottom-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                             <QuickAddButton product={product} variant="overlay" />
                           </div>
                         )}
 
-                        {/* Product Image */}
                         {product.images && product.images.length > 0 ? (
                           <Image
                             src={urlForImage(product.images[0])}
@@ -153,7 +134,6 @@ export default function CollectionClient({ collection, products }: CollectionCli
                       </div>
                     </Link>
 
-                    {/* Product Info */}
                     <div className="space-y-1.5">
                       <Link href={`/product/${product.slug.current}`}>
                         <h3 className="text-xs sm:text-sm font-medium tracking-wide uppercase text-gray-900 group-hover:text-brand-maroon transition-colors duration-200 line-clamp-2">
@@ -177,6 +157,8 @@ export default function CollectionClient({ collection, products }: CollectionCli
                           </span>
                         )}
                       </div>
+
+                      <ProductRating slug={product.slug.current} />
                     </div>
                   </motion.div>
                 )

@@ -30,10 +30,21 @@ export default {
       name: 'images',
       title: 'Product Images',
       type: 'array',
-      of: [{type: 'image'}],
-      options: {
-        hotspot: true
-      },
+      of: [{
+        type: 'image',
+        options: {
+          hotspot: true,
+          metadata: ['blurhash', 'lqip', 'palette']
+        },
+        fields: [
+          {
+            name: 'alt',
+            type: 'string',
+            title: 'Alternative text',
+            description: 'Important for SEO and accessibility.'
+          }
+        ]
+      }],
       validation: (Rule: any) => Rule.required().min(1).max(10)
     },
     {

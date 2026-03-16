@@ -60,7 +60,7 @@ export default function ContactClient() {
         // Reset form
         setFormData({ name: '', email: '', subject: '', message: '' })
         setSubmitStatus('success')
-        
+
         // Reset success message after 5 seconds
         setTimeout(() => setSubmitStatus('idle'), 5000)
       } else {
@@ -122,7 +122,7 @@ export default function ContactClient() {
               Contact Us
             </h1>
             <p className="text-xl lg:text-2xl text-brand-dark max-w-4xl mx-auto leading-relaxed">
-              We'd love to hear from you! Get in touch with any questions about our collections, orders, or anything else.
+              We&rsquo;d love to hear from you! Get in touch with any questions about our collections, orders, or anything else.
             </p>
           </motion.div>
         </div>
@@ -142,7 +142,7 @@ export default function ContactClient() {
               <h2 className="text-3xl lg:text-4xl font-serif text-brand-maroon mb-8">
                 Send us a Message
               </h2>
-              
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
@@ -160,7 +160,7 @@ export default function ContactClient() {
                       placeholder="Your full name"
                     />
                   </div>
-                  
+
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-brand-dark mb-2">
                       Email Address *
@@ -221,7 +221,7 @@ export default function ContactClient() {
                     className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700"
                   >
                     <CheckCircle className="w-5 h-5" />
-                    <span>Thank you! Your message has been sent successfully. We'll get back to you soon.</span>
+                    <span>Thank you! Your message has been sent successfully. We&rsquo;ll get back to you soon.</span>
                   </motion.div>
                 )}
 
@@ -269,7 +269,7 @@ export default function ContactClient() {
                   Get in Touch
                 </h2>
                 <p className="text-lg text-brand-dark leading-relaxed mb-8">
-                  We're here to help with any questions about our modest fashion collections, orders, or anything else you'd like to know about Haybah Collections.
+                  We&rsquo;re here to help with any questions about our modest fashion collections, orders, or anything else you&rsquo;d like to know about Haybah Collections.
                 </p>
               </div>
 
@@ -386,10 +386,10 @@ export default function ContactClient() {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl lg:text-5xl font-serif text-brand-maroon mb-6">
-              We're Here to Help
+              We&rsquo;re Here to Help
             </h2>
             <p className="text-xl text-brand-dark max-w-3xl mx-auto mb-12 leading-relaxed">
-              Can't find what you're looking for? Don't hesitate to reach out. Our team is dedicated to providing you with the best possible service and support.
+              Can&rsquo;t find what you&rsquo;re looking for? Don&rsquo;t hesitate to reach out. Our team is dedicated to providing you with the best possible service and support.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a

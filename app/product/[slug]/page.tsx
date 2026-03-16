@@ -125,18 +125,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
     
     // Return a simple error page instead of notFound() to see what's happening
     return (
-      <div className="min-h-screen bg-gradient-to-br from-brand-cream to-brand-peach flex items-center justify-center">
-        <div className="text-center space-y-6 max-w-md mx-auto px-4">
-          <h1 className="text-4xl text-brand-maroon">Error Loading Product</h1>
-          <p className="text-gray-600">
-            There was an error loading the product: {params.slug}
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center space-y-4 max-w-md mx-auto px-4">
+          <h1 className="text-xl font-serif text-gray-900">Error Loading Product</h1>
+          <p className="text-sm text-gray-500">
+            There was an error loading this product. Please try again.
           </p>
-          <p className="text-sm text-red-500">
-            Check the browser console for details
-          </p>
-          <a 
-            href="/" 
-            className="inline-block bg-brand-maroon text-white px-6 py-3 rounded-lg hover:bg-brand-burgundy transition-colors"
+          <a
+            href="/"
+            className="inline-block bg-brand-maroon hover:bg-brand-burgundy text-white text-xs tracking-[0.15em] uppercase px-6 py-3 transition-colors"
           >
             Return to Home
           </a>

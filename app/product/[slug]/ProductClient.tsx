@@ -1,14 +1,11 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import ProductGallery from '@/components/ProductGallery'
 import VariantSelector from '@/components/VariantSelector'
 import RelatedProducts from '@/components/RelatedProducts'
 import ReviewsDisplay from '@/components/ReviewsDisplay'
 import ReviewForm from '@/components/ReviewForm'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import Link from 'next/link'
 
 interface ProductClientProps {
   product: any
@@ -17,37 +14,29 @@ interface ProductClientProps {
 }
 
 export default function ProductClient({ product, relatedProducts, discountPercentage }: ProductClientProps) {
-  // Debug logging
-  console.log('=== PRODUCT CLIENT DEBUG ===')
-  console.log('Product data:', product)
-  console.log('Product collections:', product?.collections)
-  console.log('Product variants:', product?.variants)
-  console.log('Product price:', product?.price)
-  console.log('Product badges:', product?.badges)
-  console.log('Related products:', relatedProducts)
-  console.log('Discount percentage:', discountPercentage)
-  
   // Validate required product data
   if (!product || !product.name || !product.price) {
-    console.error('Invalid product data:', product)
     return (
-      <div className="min-h-screen bg-gradient-to-br from-brand-cream to-brand-peach flex items-center justify-center">
-        <div className="text-center space-y-6 max-w-md mx-auto px-4">
-          <h1 className="text-4xl text-brand-maroon">Product Data Error</h1>
-          <p className="text-gray-600">
-            This product is missing required information. Please check the product setup in Sanity Studio.
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center space-y-4 max-w-md mx-auto px-4">
+          <h1 className="text-xl font-serif text-gray-900">Product Data Error</h1>
+          <p className="text-sm text-gray-500">
+            This product is missing required information.
           </p>
-          <a 
-            href="/" 
-            className="inline-block bg-brand-maroon text-white px-6 py-3 rounded-lg hover:bg-brand-burgundy transition-colors"
+          <Link
+            href="/"
+            className="inline-block bg-brand-maroon hover:bg-brand-burgundy text-white text-xs tracking-[0.15em] uppercase px-6 py-3 transition-colors"
           >
             Return to Home
-          </a>
+          </Link>
         </div>
       </div>
     )
   }
-  
+
+  const isOnSale = product.compareAtPrice && product.price && product.compareAtPrice > product.price
+  const savings = isOnSale ? (product.compareAtPrice - product.price) : 0
+
   return (
     <>
       {/* Structured Data */}
@@ -64,160 +53,130 @@ export default function ProductClient({ product, relatedProducts, discountPercen
               "@type": "Offer",
               "price": product.price,
               "priceCurrency": "GBP",
-              "availability": product.variants?.some((v: any) => v.stock > 0) 
-                ? "https://schema.org/InStock" 
+              "availability": product.variants?.some((v: any) => v.stock > 0)
+                ? "https://schema.org/InStock"
                 : "https://schema.org/OutOfStock",
               "priceValidUntil": new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
             },
             "brand": {
               "@type": "Brand",
-              "name": "Habyah Collections"
+              "name": "Haybah Collections"
             },
-                         "category": product.collections?.[0]?.title || "Abaya"
+            "category": product.collections?.[0]?.title || "Abaya"
           })
         }}
       />
 
-      <div className="min-h-screen bg-gradient-to-br from-brand-cream to-brand-peach">
-        {/* Delivery Notice Banner */}
-        <div className="bg-brand-gold/10 border-y border-brand-gold/30 py-3 text-center mb-8">
-          <div className="container mx-auto px-4">
-            <p className="text-brand-maroon font-medium">
-              <span className="font-semibold">NOTICE:</span> Due to high demand and limited stock availability, delivery times have been extended to 2-3 weeks. We appreciate your patience and understanding.
-            </p>
+      <div className="min-h-screen bg-white">
+        {/* Breadcrumb */}
+        <div className="border-b border-gray-100">
+          <div className="container-custom py-3">
+            <nav className="text-xs text-gray-400">
+              <Link href="/" className="hover:text-gray-600 transition-colors">Home</Link>
+              <span className="mx-2">/</span>
+              <Link href="/shop" className="hover:text-gray-600 transition-colors">Shop</Link>
+              {product.collections?.[0]?.title && (
+                <>
+                  <span className="mx-2">/</span>
+                  <span className="hover:text-gray-600">{product.collections[0].title}</span>
+                </>
+              )}
+              <span className="mx-2">/</span>
+              <span className="text-gray-600">{product.name}</span>
+            </nav>
           </div>
         </div>
-        
-        <div className="container mx-auto px-4 py-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-12"
-          >
+
+        {/* Product Section */}
+        <div className="container-custom py-8 sm:py-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Product Gallery */}
-            <div className="space-y-4">
-              <ProductGallery images={product.images} name={product.name} />
-            </div>
+            <ProductGallery images={product.images} name={product.name} />
 
             {/* Product Info */}
-            <div className="space-y-6">
-                             {/* Breadcrumb */}
-               <nav className="text-sm text-gray-600">
-                 <a href="/" className="hover:text-brand-maroon">Home</a>
-                 <span className="mx-2">/</span>
-                 <a href="/shop" className="hover:text-brand-maroon">Shop</a>
-                 <span className="mx-2">/</span>
-                 <span className="text-brand-maroon">{product.name}</span>
-               </nav>
-
+            <div className="space-y-5 lg:pt-2">
               {/* Product Title */}
-              <h1 className="text-4xl font-playfair font-bold text-brand-maroon">
+              <h1 className="text-xl sm:text-2xl tracking-[0.1em] uppercase font-medium text-gray-900">
                 {product.name}
               </h1>
 
-                             {/* Price and Badges */}
-               <div className="flex items-center gap-4">
-                 <div className="flex items-baseline gap-3">
-                   <span className="text-3xl font-bold text-brand-maroon">
-                     £{product.price ? product.price.toFixed(2) : '0.00'}
-                   </span>
-                   {product.compareAtPrice && product.price && product.compareAtPrice > product.price && (
-                     <span className="text-xl text-gray-500 line-through">
-                       £{product.compareAtPrice.toFixed(2)}
-                     </span>
-                   )}
-                 </div>
-                
-                {discountPercentage > 0 && (
-                  <Badge variant="destructive" className="text-sm px-3 py-1">
-                    {discountPercentage}% OFF
-                  </Badge>
+              {/* Price */}
+              <div className="flex items-center gap-3">
+                <span className="text-lg font-medium text-gray-900">
+                  &pound;{product.price.toFixed(2)}
+                </span>
+                {isOnSale && (
+                  <>
+                    <span className="text-sm text-gray-400 line-through">
+                      &pound;{product.compareAtPrice.toFixed(2)}
+                    </span>
+                    <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5">
+                      SAVE &pound;{savings.toFixed(2)}
+                    </span>
+                  </>
                 )}
-                
-                                 {product.badges && product.badges.includes('new-arrival') && (
-                   <Badge className="bg-brand-gold text-white text-sm px-3 py-1">
-                     NEW
-                   </Badge>
-                 )}
               </div>
 
-              {/* Product Description */}
-              <div className="prose prose-brand-maroon max-w-none">
-                <p className="text-gray-700 leading-relaxed">
+              {/* Badges */}
+              {product.badges && product.badges.length > 0 && (
+                <div className="flex gap-2">
+                  {product.badges.includes('new-arrival') && (
+                    <span className="text-[10px] tracking-wider uppercase bg-gray-900 text-white px-2.5 py-1">
+                      New
+                    </span>
+                  )}
+                  {product.badges.includes('best-seller') && (
+                    <span className="text-[10px] tracking-wider uppercase bg-brand-maroon text-white px-2.5 py-1">
+                      Best Seller
+                    </span>
+                  )}
+                </div>
+              )}
+
+              {/* Description */}
+              {product.description && (
+                <p className="text-sm text-gray-500 leading-relaxed">
                   {product.description}
                 </p>
-              </div>
+              )}
 
               {/* Variant Selector */}
               {product.variants && product.variants.length > 0 ? (
                 <VariantSelector product={product} />
               ) : (
-                <div className="p-4 bg-gray-50 rounded-lg border">
-                  <p className="text-gray-600 text-center">Product variants will be available soon</p>
+                <div className="border border-gray-100 p-4">
+                  <p className="text-sm text-gray-500 text-center">Product variants will be available soon</p>
                 </div>
               )}
-
-                             {/* Collection Info */}
-               <div className="pt-4 border-t border-gray-200">
-                 {product.collections?.[0]?.title && (
-                   <p className="text-sm text-gray-600">
-                     Collection: <span className="font-medium text-brand-maroon">
-                       {product.collections[0].title}
-                     </span>
-                   </p>
-                 )}
-                 <p className="text-sm text-gray-600">
-                   {product.variants && product.variants.length > 0 
-                     ? `Available in ${product.variants.length} variants`
-                     : 'Product variants coming soon'
-                   }
-                 </p>
-               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Related Products */}
           {relatedProducts.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="mt-16"
-            >
+            <div className="mt-16 sm:mt-20">
               <RelatedProducts products={relatedProducts} />
-            </motion.div>
+            </div>
           )}
 
           {/* Reviews Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="mt-16"
-          >
+          <div className="mt-16 sm:mt-20">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Reviews Display */}
               <ReviewsDisplay
                 productSlug={product.slug?.current || product.slug}
                 onReviewSubmitted={() => {
-                  // Refresh reviews after submission
                   window.location.reload()
                 }}
               />
-              
-              {/* Review Form */}
               <ReviewForm
                 productId={product._id}
                 productSlug={product.slug?.current || product.slug}
                 productName={product.name}
                 onSubmitSuccess={() => {
-                  // Refresh reviews after successful submission
                   window.location.reload()
                 }}
               />
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </>

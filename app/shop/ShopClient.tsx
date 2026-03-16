@@ -1,14 +1,16 @@
 'use client'
 
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Filter, X } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Search, ChevronDown, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import Image from 'next/image'
 import { urlForImage } from '@/lib/sanity.image'
 import QuickAddButton from '@/components/QuickAddButton'
+import ProductRating from '@/components/ProductRating'
+import WishlistButton from '@/components/WishlistButton'
 
 interface ShopClientProps {
   initialCollections: any[]
@@ -25,12 +27,13 @@ interface FilterState {
   search: string
 }
 
+type SortOption = 'newest' | 'price-low' | 'price-high' | 'name-az'
+
 export default function ShopClient({ initialCollections, initialSizes, initialColors }: ShopClientProps) {
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
 
-  // Filter state
   const [filters, setFilters] = useState<FilterState>({
     collections: searchParams.get('collections')?.split(',').filter(Boolean) || [],
     sizes: searchParams.get('sizes')?.split(',').filter(Boolean) || [],
@@ -43,26 +46,36 @@ export default function ShopClient({ initialCollections, initialSizes, initialCo
     search: searchParams.get('search') || '',
   })
 
+  const [sortBy, setSortBy] = useState<SortOption>('newest')
   const [products, setProducts] = useState<any[]>([])
   const [totalCount, setTotalCount] = useState(0)
   const [loading, setLoading] = useState(true)
-  const [showFilters, setShowFilters] = useState(false)
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
-  // Debounced search
   const [debouncedSearch, setDebouncedSearch] = useState(filters.search)
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(filters.search)
     }, 500)
-
     return () => clearTimeout(timer)
   }, [filters.search])
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setOpenDropdown(null)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   // Update URL when filters change
   useEffect(() => {
     const params = new URLSearchParams()
-    
     if (filters.collections.length > 0) params.set('collections', filters.collections.join(','))
     if (filters.sizes.length > 0) params.set('sizes', filters.sizes.join(','))
     if (filters.colors.length > 0) params.set('colors', filters.colors.join(','))
@@ -70,7 +83,6 @@ export default function ShopClient({ initialCollections, initialSizes, initialCo
     if (filters.priceRange[1] < 1000) params.set('maxPrice', filters.priceRange[1].toString())
     if (filters.inStock) params.set('inStock', 'true')
     if (filters.search) params.set('search', filters.search)
-
     const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname
     router.push(newUrl)
   }, [filters, pathname, router])
@@ -83,27 +95,22 @@ export default function ShopClient({ initialCollections, initialSizes, initialCo
   const fetchProducts = async () => {
     setLoading(true)
     try {
-      // Build GROQ query with filters
       let query = `*[_type == "product" && defined(slug.current)`
-      
-      // Search filter
+
       if (debouncedSearch) {
         query += ` && (name match "*${debouncedSearch}*" || description match "*${debouncedSearch}*")`
       }
-      
-      // Collection filter
+
       if (filters.collections.length > 0) {
         query += ` && references(*[_type == "collection" && slug.current in $collections]._id)`
       }
-      
-      // Price filter
+
       query += ` && price >= $minPrice && price <= $maxPrice`
-      
-      // Stock filter
+
       if (filters.inStock) {
         query += ` && count(*[_type == "variant" && references(^._id) && stock > 0 && isActive == true]) > 0`
       }
-      
+
       query += `] | order(name asc) {
         _id,
         name,
@@ -112,6 +119,7 @@ export default function ShopClient({ initialCollections, initialSizes, initialCo
         compareAtPrice,
         images,
         badges,
+        createdAt,
         collections[]->{ title },
         "variants": *[_type == "variant" && references(^._id) && isActive == true] {
           _id,
@@ -124,41 +132,28 @@ export default function ShopClient({ initialCollections, initialSizes, initialCo
           priceOverride
         }
       }`
-      
-      // Count query
-      const countQuery = query.replace('| order(name asc) {', '| count')
-      
-      const [productsData, count] = await Promise.all([
-        fetch('/api/products?' + new URLSearchParams({
-          query,
-          collections: filters.collections.join(','),
-          minPrice: filters.priceRange[0].toString(),
-          maxPrice: filters.priceRange[1].toString(),
-        })).then(res => res.json()),
-        fetch('/api/products?' + new URLSearchParams({
-          query: countQuery,
-          collections: filters.collections.join(','),
-          minPrice: filters.priceRange[0].toString(),
-          maxPrice: filters.priceRange[1].toString(),
-        })).then(res => res.json())
-      ])
 
-      // Apply size and color filters client-side for better performance
-      let filteredProducts = productsData
-      
+      const productsData = await fetch('/api/products?' + new URLSearchParams({
+        query,
+        collections: filters.collections.join(','),
+        minPrice: filters.priceRange[0].toString(),
+        maxPrice: filters.priceRange[1].toString(),
+      })).then(res => res.json())
+
+      let filteredProducts = Array.isArray(productsData) ? productsData : []
+
       if (filters.sizes.length > 0) {
         filteredProducts = filteredProducts.filter((product: any) =>
           product.variants?.some((v: any) => filters.sizes.includes(v.size))
         )
       }
-      
+
       if (filters.colors.length > 0) {
         filteredProducts = filteredProducts.filter((product: any) =>
           product.variants?.some((v: any) => filters.colors.includes(v.color))
         )
       }
 
-      // Apply stock filter client-side as backup
       if (filters.inStock) {
         filteredProducts = filteredProducts.filter((product: any) =>
           product.variants?.some((v: any) => v.stock > 0 && v.isActive)
@@ -166,13 +161,24 @@ export default function ShopClient({ initialCollections, initialSizes, initialCo
       }
 
       setProducts(filteredProducts)
-      setTotalCount(count)
+      setTotalCount(filteredProducts.length)
     } catch (error) {
       console.error('Error fetching products:', error)
     } finally {
       setLoading(false)
     }
   }
+
+  // Sort products
+  const sortedProducts = [...products].sort((a, b) => {
+    switch (sortBy) {
+      case 'price-low': return a.price - b.price
+      case 'price-high': return b.price - a.price
+      case 'name-az': return a.name.localeCompare(b.name)
+      case 'newest':
+      default: return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+    }
+  })
 
   const updateFilter = (key: keyof FilterState, value: any) => {
     setFilters(prev => ({ ...prev, [key]: value }))
@@ -196,187 +202,276 @@ export default function ShopClient({ initialCollections, initialSizes, initialCo
       inStock: false,
       search: '',
     })
+    setSortBy('newest')
   }
 
-  const hasActiveFilters = Object.values(filters).some(value => 
-    Array.isArray(value) ? value.length > 0 : Boolean(value)
-  )
+  const hasActiveFilters = filters.collections.length > 0 ||
+    filters.sizes.length > 0 ||
+    filters.colors.length > 0 ||
+    filters.priceRange[0] > 0 ||
+    filters.priceRange[1] < 1000 ||
+    filters.inStock
+
+  const getFilterCount = (key: string): number => {
+    switch (key) {
+      case 'collections': return filters.collections.length
+      case 'sizes': return filters.sizes.length
+      case 'colors': return filters.colors.length
+      case 'price': return (filters.priceRange[0] > 0 || filters.priceRange[1] < 1000) ? 1 : 0
+      case 'stock': return filters.inStock ? 1 : 0
+      default: return 0
+    }
+  }
+
+  const toggleDropdown = (name: string) => {
+    setOpenDropdown(prev => prev === name ? null : name)
+  }
+
+  const sortLabels: Record<SortOption, string> = {
+    'newest': 'Newest',
+    'price-low': 'Price: Low to High',
+    'price-high': 'Price: High to Low',
+    'name-az': 'Name: A to Z',
+  }
 
   return (
-    <div className="space-y-8">
-      {/* Search and Filter Header */}
-      <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-        <div className="flex-1 max-w-md">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={filters.search}
-              onChange={(e) => updateFilter('search', e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-maroon focus:border-transparent"
-            />
-          </div>
-        </div>
-        
-        <div className="flex gap-2">
-          <Button
-            onClick={() => setShowFilters(!showFilters)}
-            variant="outline"
-            className="border-brand-maroon text-brand-maroon hover:bg-brand-maroon hover:text-white"
-          >
-            <Filter size={16} className="mr-2" />
-            Filters
-            {hasActiveFilters && (
-              <span className="ml-2 bg-brand-maroon text-white text-xs px-1.5 py-0.5 rounded-full">
-                {Object.values(filters).filter(v => Array.isArray(v) ? v.length > 0 : Boolean(v)).length}
-              </span>
-            )}
-          </Button>
-          
-          {hasActiveFilters && (
-            <Button onClick={clearFilters} variant="outline" className="border-gray-300">
-              <X size={16} className="mr-2" />
-              Clear
-            </Button>
-          )}
-        </div>
+    <div className="space-y-6">
+      {/* Search Bar */}
+      <div className="relative max-w-md">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+        <input
+          type="text"
+          placeholder="Search products..."
+          value={filters.search}
+          onChange={(e) => updateFilter('search', e.target.value)}
+          className="w-full pl-10 pr-4 py-2.5 border border-gray-200 text-sm focus:ring-1 focus:ring-brand-maroon focus:border-brand-maroon outline-none transition-colors"
+        />
       </div>
 
-      {/* Filters Panel */}
-      <AnimatePresence>
-        {showFilters && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="bg-gray-50 rounded-lg p-6 space-y-6"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {/* Collections */}
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Collections</h3>
-                <div className="space-y-2">
+      {/* Horizontal Filter Bar */}
+      <div ref={dropdownRef} className="relative">
+        <div className="flex flex-wrap items-center gap-2 pb-4 border-b border-gray-200">
+          {/* Collection Filter */}
+          <div className="relative">
+            <button
+              onClick={() => toggleDropdown('collections')}
+              className={`flex items-center gap-1.5 px-3 py-2 text-xs tracking-wide uppercase border transition-colors ${
+                openDropdown === 'collections' || filters.collections.length > 0
+                  ? 'border-brand-maroon text-brand-maroon'
+                  : 'border-gray-200 text-gray-600 hover:border-gray-400'
+              }`}
+            >
+              Collection
+              {getFilterCount('collections') > 0 && (
+                <span className="bg-brand-maroon text-white text-[10px] px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                  {getFilterCount('collections')}
+                </span>
+              )}
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === 'collections' ? 'rotate-180' : ''}`} />
+            </button>
+
+            {openDropdown === 'collections' && (
+              <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 shadow-lg z-30 min-w-[200px] p-3">
+                <div className="space-y-2 max-h-60 overflow-y-auto">
                   {Array.isArray(initialCollections) && initialCollections.length > 0 ? (
                     initialCollections.map((collection) => (
-                      <label key={collection._id || collection.title} className="flex items-center">
+                      <label key={collection._id || collection.title} className="flex items-center cursor-pointer">
                         <input
                           type="checkbox"
                           checked={filters.collections.includes(collection.slug?.current || '')}
                           onChange={() => toggleFilter('collections', collection.slug?.current || '')}
-                          className="rounded border-gray-300 text-brand-maroon focus:ring-brand-maroon"
+                          className="rounded border-gray-300 text-brand-maroon focus:ring-brand-maroon w-3.5 h-3.5"
                         />
                         <span className="ml-2 text-sm text-gray-700">{collection.title || 'Untitled'}</span>
                       </label>
                     ))
                   ) : (
-                    <p className="text-sm text-gray-500">No collections available</p>
+                    <p className="text-xs text-gray-400">No collections</p>
                   )}
                 </div>
               </div>
+            )}
+          </div>
 
-              {/* Sizes */}
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Sizes</h3>
-                <div className="space-y-2">
+          {/* Size Filter */}
+          <div className="relative">
+            <button
+              onClick={() => toggleDropdown('sizes')}
+              className={`flex items-center gap-1.5 px-3 py-2 text-xs tracking-wide uppercase border transition-colors ${
+                openDropdown === 'sizes' || filters.sizes.length > 0
+                  ? 'border-brand-maroon text-brand-maroon'
+                  : 'border-gray-200 text-gray-600 hover:border-gray-400'
+              }`}
+            >
+              Size
+              {getFilterCount('sizes') > 0 && (
+                <span className="bg-brand-maroon text-white text-[10px] px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                  {getFilterCount('sizes')}
+                </span>
+              )}
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === 'sizes' ? 'rotate-180' : ''}`} />
+            </button>
+
+            {openDropdown === 'sizes' && (
+              <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 shadow-lg z-30 min-w-[160px] p-3">
+                <div className="space-y-2 max-h-60 overflow-y-auto">
                   {Array.isArray(initialSizes) && initialSizes.length > 0 ? (
                     initialSizes.map((size) => (
-                      <label key={size} className="flex items-center">
+                      <label key={size} className="flex items-center cursor-pointer">
                         <input
                           type="checkbox"
                           checked={filters.sizes.includes(size)}
                           onChange={() => toggleFilter('sizes', size)}
-                          className="rounded border-gray-300 text-brand-maroon focus:ring-brand-maroon"
+                          className="rounded border-gray-300 text-brand-maroon focus:ring-brand-maroon w-3.5 h-3.5"
                         />
                         <span className="ml-2 text-sm text-gray-700">{size}</span>
                       </label>
                     ))
                   ) : (
-                    <p className="text-sm text-gray-500">No sizes available</p>
+                    <p className="text-xs text-gray-400">No sizes</p>
                   )}
                 </div>
               </div>
+            )}
+          </div>
 
-              {/* Colors */}
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Colors</h3>
-                <div className="space-y-2">
+          {/* Colour Filter */}
+          <div className="relative">
+            <button
+              onClick={() => toggleDropdown('colors')}
+              className={`flex items-center gap-1.5 px-3 py-2 text-xs tracking-wide uppercase border transition-colors ${
+                openDropdown === 'colors' || filters.colors.length > 0
+                  ? 'border-brand-maroon text-brand-maroon'
+                  : 'border-gray-200 text-gray-600 hover:border-gray-400'
+              }`}
+            >
+              Colour
+              {getFilterCount('colors') > 0 && (
+                <span className="bg-brand-maroon text-white text-[10px] px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                  {getFilterCount('colors')}
+                </span>
+              )}
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === 'colors' ? 'rotate-180' : ''}`} />
+            </button>
+
+            {openDropdown === 'colors' && (
+              <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 shadow-lg z-30 min-w-[160px] p-3">
+                <div className="space-y-2 max-h-60 overflow-y-auto">
                   {Array.isArray(initialColors) && initialColors.length > 0 ? (
                     initialColors.map((color) => (
-                      <label key={color} className="flex items-center">
+                      <label key={color} className="flex items-center cursor-pointer">
                         <input
                           type="checkbox"
                           checked={filters.colors.includes(color)}
                           onChange={() => toggleFilter('colors', color)}
-                          className="rounded border-gray-300 text-brand-maroon focus:ring-brand-maroon"
+                          className="rounded border-gray-300 text-brand-maroon focus:ring-brand-maroon w-3.5 h-3.5"
                         />
                         <span className="ml-2 text-sm text-gray-700 capitalize">{color}</span>
                       </label>
                     ))
                   ) : (
-                    <p className="text-sm text-gray-500">No colors available</p>
+                    <p className="text-xs text-gray-400">No colours</p>
                   )}
                 </div>
               </div>
+            )}
+          </div>
 
-              {/* Price Range & Stock */}
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">Price Range</h3>
-                  <div className="space-y-2">
-                    <input
-                      type="range"
-                      min="0"
-                      max="1000"
-                      value={filters.priceRange[1]}
-                      onChange={(e) => updateFilter('priceRange', [filters.priceRange[0], parseInt(e.target.value)])}
-                      className="w-full"
-                    />
-                    <div className="flex justify-between text-sm text-gray-600">
-                      <span>£{filters.priceRange[0]}</span>
-                      <span>£{filters.priceRange[1]}</span>
-                    </div>
+          {/* Price Filter */}
+          <div className="relative">
+            <button
+              onClick={() => toggleDropdown('price')}
+              className={`flex items-center gap-1.5 px-3 py-2 text-xs tracking-wide uppercase border transition-colors ${
+                openDropdown === 'price' || getFilterCount('price') > 0
+                  ? 'border-brand-maroon text-brand-maroon'
+                  : 'border-gray-200 text-gray-600 hover:border-gray-400'
+              }`}
+            >
+              Price
+              {getFilterCount('price') > 0 && (
+                <span className="bg-brand-maroon text-white text-[10px] px-1.5 py-0.5 rounded-full min-w-[18px] text-center">1</span>
+              )}
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === 'price' ? 'rotate-180' : ''}`} />
+            </button>
+
+            {openDropdown === 'price' && (
+              <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 shadow-lg z-30 min-w-[220px] p-4">
+                <div className="space-y-3">
+                  <input
+                    type="range"
+                    min="0"
+                    max="1000"
+                    value={filters.priceRange[1]}
+                    onChange={(e) => updateFilter('priceRange', [filters.priceRange[0], parseInt(e.target.value)])}
+                    className="w-full accent-brand-maroon"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500">
+                    <span>&pound;{filters.priceRange[0]}</span>
+                    <span>&pound;{filters.priceRange[1]}</span>
                   </div>
                 </div>
-
-                <div>
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={filters.inStock}
-                      onChange={(e) => updateFilter('inStock', e.target.checked)}
-                      className="rounded border-gray-300 text-brand-maroon focus:ring-brand-maroon"
-                    />
-                    <span className="ml-2 text-sm text-gray-700">In Stock Only</span>
-                  </label>
-                </div>
               </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            )}
+          </div>
 
-             {/* Results Count */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <p className="text-gray-600">
-              {loading ? 'Loading...' : `${products.length} product${products.length !== 1 ? 's' : ''} found`}
-            </p>
-            {filters.collections.length > 0 && (
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500">Filtered by:</span>
-                {filters.collections.map((collectionSlug) => {
-                  const collection = initialCollections.find(c => c.slug?.current === collectionSlug)
-                  return (
-                    <span key={collectionSlug} className="px-2 py-1 bg-brand-maroon/10 text-brand-maroon text-xs rounded-full">
-                      {collection?.title || collectionSlug}
-                    </span>
-                  )
-                })}
+          {/* In Stock Filter */}
+          <button
+            onClick={() => updateFilter('inStock', !filters.inStock)}
+            className={`flex items-center gap-1.5 px-3 py-2 text-xs tracking-wide uppercase border transition-colors ${
+              filters.inStock
+                ? 'border-brand-maroon text-brand-maroon bg-brand-maroon/5'
+                : 'border-gray-200 text-gray-600 hover:border-gray-400'
+            }`}
+          >
+            In Stock
+          </button>
+
+          {/* Clear All */}
+          {hasActiveFilters && (
+            <button
+              onClick={clearFilters}
+              className="flex items-center gap-1 px-3 py-2 text-xs tracking-wide text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="w-3.5 h-3.5" />
+              Clear all
+            </button>
+          )}
+
+          {/* Sort - pushed to right */}
+          <div className="relative ml-auto">
+            <button
+              onClick={() => toggleDropdown('sort')}
+              className="flex items-center gap-1.5 px-3 py-2 text-xs tracking-wide text-gray-600 border border-gray-200 hover:border-gray-400 transition-colors"
+            >
+              Sort: {sortLabels[sortBy]}
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === 'sort' ? 'rotate-180' : ''}`} />
+            </button>
+
+            {openDropdown === 'sort' && (
+              <div className="absolute top-full right-0 mt-1 bg-white border border-gray-200 shadow-lg z-30 min-w-[180px]">
+                {(Object.entries(sortLabels) as [SortOption, string][]).map(([value, label]) => (
+                  <button
+                    key={value}
+                    onClick={() => { setSortBy(value); setOpenDropdown(null) }}
+                    className={`w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors ${
+                      sortBy === value ? 'text-brand-maroon font-medium' : 'text-gray-600'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
               </div>
             )}
           </div>
         </div>
+
+        {/* Results count */}
+        <div className="pt-3 pb-1">
+          <p className="text-xs text-gray-400">
+            {loading ? 'Loading...' : `${sortedProducts.length} product${sortedProducts.length !== 1 ? 's' : ''}`}
+          </p>
+        </div>
+      </div>
 
       {/* Products Grid */}
       {loading ? (
@@ -389,7 +484,7 @@ export default function ShopClient({ initialCollections, initialSizes, initialCo
             </div>
           ))}
         </div>
-      ) : products.length === 0 ? (
+      ) : sortedProducts.length === 0 ? (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -400,7 +495,7 @@ export default function ShopClient({ initialCollections, initialSizes, initialCo
           </div>
           <h3 className="text-2xl font-semibold text-gray-900 mb-2">No products found</h3>
           <p className="text-gray-600 mb-6">
-            Try adjusting your filters or search terms to find what you're looking for.
+            Try adjusting your filters or search terms to find what you&apos;re looking for.
           </p>
           <Button onClick={clearFilters} className="bg-brand-maroon hover:bg-brand-maroon/90 text-white">
             Clear All Filters
@@ -408,7 +503,7 @@ export default function ShopClient({ initialCollections, initialSizes, initialCo
         </motion.div>
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          {products.map((product, index) => {
+          {sortedProducts.map((product, index) => {
             const hasStock = product.variants?.some((v: any) => v.stock > 0 && v.isActive)
             const isOnSale = product.compareAtPrice && product.compareAtPrice > product.price
             const savings = isOnSale ? (product.compareAtPrice - product.price) : 0
@@ -442,6 +537,9 @@ export default function ShopClient({ initialCollections, initialSizes, initialCo
                         </span>
                       )}
                     </div>
+
+                    {/* Wishlist Button */}
+                    <WishlistButton product={product} imageUrl={product.images?.[0] ? urlForImage(product.images[0]) : ''} />
 
                     {/* Quick Add Overlay Button */}
                     {hasStock && (
@@ -492,6 +590,8 @@ export default function ShopClient({ initialCollections, initialSizes, initialCo
                       </span>
                     )}
                   </div>
+
+                  <ProductRating slug={product.slug.current} />
                 </div>
               </motion.div>
             )
@@ -501,4 +601,3 @@ export default function ShopClient({ initialCollections, initialSizes, initialCo
     </div>
   )
 }
-

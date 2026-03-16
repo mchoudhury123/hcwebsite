@@ -1,7 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { X, Trash2, Minus, Plus, Loader2 } from 'lucide-react'
+import { X, Trash2, Minus, Plus, Loader2, ShoppingBag } from 'lucide-react'
 import { useCartStore } from '../lib/cart'
 import { Button } from './ui/button'
 import { Badge } from './ui/badge'
@@ -18,7 +17,6 @@ export default function CartPanel({ onClose }: CartPanelProps) {
   const [isCheckingOut, setIsCheckingOut] = useState(false)
   const [isHydrated, setIsHydrated] = useState(false)
 
-  // Ensure hydration is complete before rendering cart state
   useEffect(() => {
     setIsHydrated(true)
   }, [])
@@ -33,20 +31,12 @@ export default function CartPanel({ onClose }: CartPanelProps) {
 
   const handleCheckout = async () => {
     if (items.length === 0) return
-
-    console.log('Checkout clicked! Cart items:', items)
-    console.log('Cart total:', total)
-
     setIsCheckingOut(true)
-    
     try {
-      // Redirect to checkout page instead of calling API directly
       onClose()
-      console.log('Redirecting to /checkout')
       window.location.href = '/checkout'
     } catch (error) {
       console.error('Checkout error:', error)
-      alert(`Checkout failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setIsCheckingOut(false)
     }
@@ -55,106 +45,93 @@ export default function CartPanel({ onClose }: CartPanelProps) {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-gray-200">
-        <h2 className="text-xl font-playfair font-bold text-brand-maroon">Shopping Cart</h2>
-        <button
-          onClick={onClose}
-          className="p-2 text-gray-500 hover:text-brand-maroon transition-colors"
-        >
-          <X size={20} />
+      <div className="flex items-center justify-between p-5 border-b border-gray-100">
+        <h2 className="text-sm tracking-[0.15em] uppercase font-medium text-gray-900">Cart</h2>
+        <button onClick={onClose} className="p-1 text-gray-400 hover:text-gray-600 transition-colors">
+          <X size={18} />
         </button>
       </div>
 
-      {/* Cart Items */}
-      <div className="flex-1 overflow-y-auto p-6">
+      {/* Items */}
+      <div className="flex-1 overflow-y-auto p-5">
         {!isHydrated ? (
           <div className="text-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-brand-maroon" />
-            <p className="text-gray-500">Loading cart...</p>
+            <Loader2 className="w-6 h-6 animate-spin mx-auto mb-3 text-gray-400" />
+            <p className="text-sm text-gray-400">Loading...</p>
           </div>
         ) : items.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="w-20 h-20 bg-brand-maroon/10 rounded-full mx-auto mb-4 flex items-center justify-center">
-              <span className="text-brand-maroon text-3xl">🛍️</span>
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Your cart is empty</h3>
-            <p className="text-gray-500 mb-6">Add some beautiful Abayas to get started!</p>
-            <Button
-              onClick={onClose}
-              className="bg-brand-maroon hover:bg-brand-maroon/90 text-white"
-            >
+          <div className="text-center py-16">
+            <ShoppingBag className="w-10 h-10 text-gray-300 mx-auto mb-4" />
+            <p className="text-sm font-medium text-gray-900 mb-1">Your cart is empty</p>
+            <p className="text-xs text-gray-400 mb-6">Add items to get started</p>
+            <Button onClick={onClose} className="bg-brand-maroon hover:bg-brand-burgundy text-white text-xs tracking-wider uppercase">
               Continue Shopping
             </Button>
           </div>
         ) : (
           <div className="space-y-4">
             {items.map((item) => (
-              <motion.div
+              <div
                 key={`${item.productId}-${item.variantId}`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg"
+                className="flex items-start gap-3 pb-4 border-b border-gray-50"
               >
-                {/* Item Image */}
-                <div className="relative w-16 h-20 bg-white rounded overflow-hidden flex-shrink-0">
+                {/* Image */}
+                <div className="relative w-16 h-20 bg-gray-50 flex-shrink-0 overflow-hidden">
                   {item.image ? (
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-full h-full object-cover"
-                    />
+                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-brand-peach to-brand-cream flex items-center justify-center">
-                      <span className="text-brand-maroon text-lg">👗</span>
+                    <div className="w-full h-full flex items-center justify-center">
+                      <ShoppingBag className="w-5 h-5 text-gray-300" />
                     </div>
                   )}
                 </div>
 
-                {/* Item Details */}
+                {/* Details */}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-medium text-gray-900 truncate">{item.name}</h3>
-                  <div className="flex items-center space-x-2 mt-1">
+                  <h3 className="text-sm font-medium text-gray-900 truncate">{item.name}</h3>
+                  <div className="flex items-center gap-2 mt-1">
                     {item.size && (
-                      <Badge variant="outline" className="text-xs">
-                        Size: {item.size}
-                      </Badge>
+                      <span className="text-[10px] text-gray-400 uppercase tracking-wider">
+                        {item.size}
+                      </span>
                     )}
+                    {item.size && item.color && <span className="text-gray-200">|</span>}
                     {item.color && (
-                      <Badge variant="outline" className="text-xs capitalize">
+                      <span className="text-[10px] text-gray-400 capitalize tracking-wider">
                         {item.color}
-                      </Badge>
+                      </span>
                     )}
                   </div>
-                  <p className="text-brand-maroon font-semibold mt-1">
-                    £{item.price.toFixed(2)}
+                  <p className="text-sm font-medium text-gray-900 mt-1.5">
+                    &pound;{item.price.toFixed(2)}
                   </p>
-                </div>
 
-                {/* Quantity Controls */}
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => handleUpdateQty(item.productId, item.variantId, item.qty - 1)}
-                    className="p-1 text-gray-500 hover:text-brand-maroon transition-colors"
-                  >
-                    <Minus size={16} />
-                  </button>
-                  <span className="w-8 text-center text-sm font-medium">{item.qty}</span>
-                  <button
-                    onClick={() => handleUpdateQty(item.productId, item.variantId, item.qty + 1)}
-                    className="p-1 text-gray-500 hover:text-brand-maroon transition-colors"
-                  >
-                    <Plus size={16} />
-                  </button>
+                  {/* Qty controls */}
+                  <div className="flex items-center gap-3 mt-2">
+                    <div className="flex items-center border border-gray-200">
+                      <button
+                        onClick={() => handleUpdateQty(item.productId, item.variantId, item.qty - 1)}
+                        className="p-1.5 text-gray-400 hover:text-gray-600 transition-colors"
+                      >
+                        <Minus size={12} />
+                      </button>
+                      <span className="w-7 text-center text-xs font-medium">{item.qty}</span>
+                      <button
+                        onClick={() => handleUpdateQty(item.productId, item.variantId, item.qty + 1)}
+                        className="p-1.5 text-gray-400 hover:text-gray-600 transition-colors"
+                      >
+                        <Plus size={12} />
+                      </button>
+                    </div>
+                    <button
+                      onClick={() => remove(item.productId, item.variantId)}
+                      className="text-gray-300 hover:text-red-400 transition-colors"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
                 </div>
-
-                {/* Remove Button */}
-                <button
-                  onClick={() => remove(item.productId, item.variantId)}
-                  className="p-2 text-gray-400 hover:text-red-500 transition-colors"
-                >
-                  <Trash2 size={16} />
-                </button>
-              </motion.div>
+              </div>
             ))}
           </div>
         )}
@@ -162,46 +139,33 @@ export default function CartPanel({ onClose }: CartPanelProps) {
 
       {/* Footer */}
       {isHydrated && items.length > 0 && (
-        <div className="border-t border-gray-200 p-6 space-y-4">
-          {/* Total */}
-          <div className="flex items-center justify-between text-lg font-semibold">
-            <span>Total:</span>
-            <span className="text-brand-maroon">£{total.toFixed(2)}</span>
+        <div className="border-t border-gray-100 p-5 space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-500">Subtotal</span>
+            <span className="text-base font-medium text-gray-900">&pound;{total.toFixed(2)}</span>
           </div>
 
-          {/* Action Buttons */}
-          <div className="space-y-3">
-            <Button
-              onClick={onClose}
-              className="w-full bg-brand-maroon hover:bg-brand-maroon/90 text-white"
-            >
-              Continue Shopping
-            </Button>
-            
-            <Button
-              onClick={handleCheckout}
-              disabled={isCheckingOut}
-              variant="outline"
-              className="w-full border-brand-maroon text-brand-maroon hover:bg-brand-maroon hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isCheckingOut ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                'Proceed to Checkout'
-              )}
-            </Button>
+          <Button
+            onClick={handleCheckout}
+            disabled={isCheckingOut}
+            className="w-full bg-brand-maroon hover:bg-brand-burgundy text-white text-xs tracking-wider uppercase py-3 disabled:opacity-50"
+          >
+            {isCheckingOut ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                Processing...
+              </span>
+            ) : (
+              'Checkout'
+            )}
+          </Button>
 
-            <Button
-              onClick={clear}
-              variant="outline"
-              className="w-full border-gray-300 text-gray-600 hover:bg-gray-50"
-            >
-              Clear Cart
-            </Button>
-          </div>
+          <button
+            onClick={onClose}
+            className="w-full text-center text-xs text-gray-400 hover:text-gray-600 transition-colors py-1"
+          >
+            Continue Shopping
+          </button>
         </div>
       )}
     </div>

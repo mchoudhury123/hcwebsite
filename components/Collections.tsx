@@ -65,10 +65,10 @@ export default function Collections() {
                       priority={index === 0}
                     />
                   </div>
-                  
+
                   {/* Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  
+
                   {/* Content */}
                   <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                     <h3 className="text-2xl lg:text-3xl font-serif mb-2 group-hover:text-brand-peach transition-colors">
@@ -82,7 +82,7 @@ export default function Collections() {
                         {collection.productCount}
                       </span>
                       <span className="text-brand-peach font-medium group-hover:text-white transition-colors">
-                        Explore →
+                        Explore &rarr;
                       </span>
                     </div>
                   </div>
@@ -100,8 +100,8 @@ export default function Collections() {
           transition={{ duration: 0.6, delay: 0.4 }}
           viewport={{ once: true }}
         >
-          <a 
-            href="/shop" 
+          <a
+            href="/shop"
             className="btn-primary inline-block"
           >
             Shop All Products
@@ -110,4 +110,4 @@ export default function Collections() {
       </div>
     </section>
   )
-} 
+}

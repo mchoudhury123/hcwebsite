@@ -63,8 +63,17 @@ export default {
       title: 'Variant Image',
       type: 'image',
       options: {
-        hotspot: true
+        hotspot: true,
+        metadata: ['blurhash', 'lqip', 'palette']
       },
+      fields: [
+        {
+          name: 'alt',
+          type: 'string',
+          title: 'Alternative text',
+          description: 'Important for SEO and accessibility.'
+        }
+      ],
       description: 'Optional specific image for this variant'
     },
     {

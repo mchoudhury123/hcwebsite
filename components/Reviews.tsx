@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { Star, Quote, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Star, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
 interface Review {
@@ -24,9 +24,8 @@ export default function Reviews() {
   const [currentPage, setCurrentPage] = useState(0)
   const [products, setProducts] = useState<SanityProduct[]>([])
   const reviewsPerPage = 3
-  const totalPages = 2 // We have 6 reviews, so 2 pages
+  const totalPages = 2
 
-  // Fetch products from Sanity
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -39,11 +38,9 @@ export default function Reviews() {
         console.error('Error fetching products:', error)
       }
     }
-    
     fetchProducts()
   }, [])
 
-  // Create reviews with actual product names
   const reviews: Review[] = [
     {
       id: 1,
@@ -101,99 +98,89 @@ export default function Reviews() {
     }
   ]
 
-  const nextPage = () => {
-    setCurrentPage((prev) => (prev + 1) % totalPages)
-  }
-
-  const prevPage = () => {
-    setCurrentPage((prev) => (prev - 1 + totalPages) % totalPages)
-  }
-
   const currentReviews = reviews.slice(
     currentPage * reviewsPerPage,
     (currentPage + 1) * reviewsPerPage
   )
 
   return (
-    <section className="section-padding bg-gradient-to-br from-brand-cream to-white">
+    <section className="py-16 sm:py-20 bg-white">
       <div className="container-custom">
         <motion.div
-          className="text-center mb-8 sm:mb-12 md:mb-16"
-          initial={{ opacity: 0, y: 30 }}
+          className="text-center mb-10"
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <h2 className="heading-mobile-responsive font-serif text-brand-dark mb-3 sm:mb-4">
-            WHAT OUR CUSTOMERS SAY
-          </h2>
-          <p className="text-mobile-responsive text-gray-600 max-w-2xl mx-auto">
-            Real experiences from women who have discovered the perfect blend of elegance, comfort, and modesty in our abaya collections.
+          <p className="text-[11px] tracking-[0.25em] uppercase text-brand-maroon mb-3">
+            Testimonials
           </p>
+          <h2 className="text-3xl sm:text-4xl font-serif text-gray-900">
+            What Our Customers Say
+          </h2>
         </motion.div>
 
-        {/* Reviews Container */}
-        <div className="relative max-w-6xl mx-auto">
-          {/* Navigation Buttons */}
+        <div className="relative max-w-5xl mx-auto">
+          {/* Navigation */}
           <button
-            onClick={prevPage}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 sm:-translate-x-4 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-brand-gold hover:text-white transition-all duration-300 group"
+            onClick={() => setCurrentPage((prev) => (prev - 1 + totalPages) % totalPages)}
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 sm:-translate-x-6 z-10 w-9 h-9 sm:w-10 sm:h-10 border border-gray-200 bg-white rounded-full flex items-center justify-center hover:border-brand-maroon hover:text-brand-maroon transition-colors"
             aria-label="Previous reviews"
           >
-            <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform" />
+            <ChevronLeft className="w-4 h-4" />
           </button>
 
           <button
-            onClick={nextPage}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 sm:translate-x-4 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-brand-gold hover:text-white transition-all duration-300 group"
+            onClick={() => setCurrentPage((prev) => (prev + 1) % totalPages)}
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 sm:translate-x-6 z-10 w-9 h-9 sm:w-10 sm:h-10 border border-gray-200 bg-white rounded-full flex items-center justify-center hover:border-brand-maroon hover:text-brand-maroon transition-colors"
             aria-label="Next reviews"
           >
-            <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform" />
+            <ChevronRight className="w-4 h-4" />
           </button>
 
           {/* Reviews Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 px-4 sm:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 px-6 sm:px-10">
             <AnimatePresence mode="wait">
               {currentReviews.map((review, index) => (
                 <motion.div
                   key={`${currentPage}-${review.id}`}
-                  className="bg-white rounded-lg shadow-elegant p-4 sm:p-6 h-full flex flex-col"
-                  initial={{ opacity: 0, y: 20 }}
+                  className="border border-gray-100 p-5 sm:p-6 flex flex-col"
+                  initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.4, delay: index * 0.08 }}
                 >
-                  {/* Quote icon */}
-                  <div className="flex justify-between items-start mb-3 sm:mb-4">
-                    <Quote className="w-6 h-6 sm:w-8 sm:h-8 text-brand-gold opacity-60" />
-                    {review.verified && (
-                      <span className="text-xs bg-brand-gold text-white px-2 py-1 rounded-full">
-                        Verified Purchase
-                      </span>
-                    )}
-                  </div>
-
                   {/* Rating */}
-                  <div className="flex items-center mb-3 sm:mb-4">
+                  <div className="flex items-center gap-0.5 mb-3">
                     {[...Array(review.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 sm:w-5 sm:h-5 text-brand-gold fill-current" />
+                      <Star key={i} className="w-3.5 h-3.5 text-brand-gold fill-current" />
                     ))}
                   </div>
 
                   {/* Review text */}
-                  <p className="text-gray-700 leading-relaxed mb-4 sm:mb-6 flex-grow text-sm sm:text-base">
-                    "{review.review}"
+                  <p className="text-sm text-gray-600 leading-relaxed mb-5 flex-grow">
+                    &ldquo;{review.review}&rdquo;
                   </p>
 
                   {/* Product name */}
-                  <p className="text-xs sm:text-sm font-medium text-brand-maroon mb-2 sm:mb-3">
-                    {review.product}
-                  </p>
+                  {review.product && (
+                    <p className="text-xs text-brand-maroon mb-3">
+                      {review.product}
+                    </p>
+                  )}
 
                   {/* Customer info */}
-                  <div className="mt-auto">
-                    <p className="font-semibold text-brand-dark text-sm sm:text-base">{review.name}</p>
-                    <p className="text-xs text-gray-500">{review.date}</p>
+                  <div className="mt-auto flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{review.name}</p>
+                      <p className="text-xs text-gray-400">{review.date}</p>
+                    </div>
+                    {review.verified && (
+                      <span className="text-[10px] tracking-wider uppercase text-gray-400 border border-gray-200 px-2 py-0.5">
+                        Verified
+                      </span>
+                    )}
                   </div>
                 </motion.div>
               ))}
@@ -201,15 +188,13 @@ export default function Reviews() {
           </div>
 
           {/* Page Indicators */}
-          <div className="flex justify-center items-center space-x-2 mt-6 sm:mt-8">
+          <div className="flex justify-center items-center gap-2 mt-8">
             {[...Array(totalPages)].map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentPage(index)}
-                className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
-                  index === currentPage
-                    ? 'bg-brand-gold scale-125'
-                    : 'bg-gray-300 hover:bg-gray-400'
+                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                  index === currentPage ? 'bg-brand-maroon w-6' : 'bg-gray-300'
                 }`}
                 aria-label={`Go to page ${index + 1}`}
               />
@@ -217,28 +202,23 @@ export default function Reviews() {
           </div>
         </div>
 
-        {/* Call to action */}
+        {/* Rating summary */}
         <motion.div
-          className="text-center mt-12 sm:mt-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
+          className="text-center mt-10"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
           viewport={{ once: true }}
         >
-          <p className="text-mobile-responsive text-gray-600 mb-4 sm:mb-6">
-            Join thousands of satisfied customers who have found their perfect abaya
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-            <div className="flex items-center space-x-2">
-              <div className="flex">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 sm:w-5 sm:h-5 text-brand-gold fill-current" />
-                ))}
-              </div>
-              <span className="text-brand-dark font-medium text-sm sm:text-base">4.9/5</span>
+          <div className="flex items-center justify-center gap-4 text-sm text-gray-500">
+            <div className="flex items-center gap-1">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-3.5 h-3.5 text-brand-gold fill-current" />
+              ))}
+              <span className="ml-1 text-gray-700 font-medium">4.9</span>
             </div>
-            <span className="text-gray-400">•</span>
-            <span className="text-brand-dark font-medium text-sm sm:text-base">500+ Happy Customers</span>
+            <span className="text-gray-300">|</span>
+            <span>Based on customer reviews</span>
           </div>
         </motion.div>
       </div>

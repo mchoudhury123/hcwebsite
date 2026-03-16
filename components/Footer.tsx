@@ -5,9 +5,9 @@ import { Instagram } from 'lucide-react'
 
 // Custom TikTok icon component
 const TikTokIcon = ({ className }: { className?: string }) => (
-  <svg 
-    className={className} 
-    viewBox="0 0 24 24" 
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
     fill="currentColor"
     xmlns="http://www.w3.org/2000/svg"
   >
@@ -35,24 +35,24 @@ export default function Footer() {
               <p className="text-brand-peach text-sm">Collections</p>
             </div>
             <p className="text-gray-300 mb-6 leading-relaxed max-w-md">
-              Discover the finest collection of elegant Abayas and modest fashion. 
+              Discover the finest collection of elegant Abayas and modest fashion.
               Luxury comfort made for the modern woman who values both style and tradition.
             </p>
             <div className="flex items-center space-x-4">
               <span className="text-brand-gold font-medium">Follow us:</span>
               <div className="flex space-x-3">
-                <a 
-                  href="https://www.instagram.com/haybahcollections" 
-                  target="_blank" 
+                <a
+                  href="https://www.instagram.com/haybahcollections"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 bg-brand-maroon rounded-full flex items-center justify-center hover:bg-brand-gold transition-all duration-300 group transform hover:scale-110"
                   aria-label="Follow us on Instagram"
                 >
                   <Instagram className="w-5 h-5 text-white group-hover:text-brand-dark transition-colors duration-300" />
                 </a>
-                <a 
-                  href="https://www.tiktok.com/@haybahcollections" 
-                  target="_blank" 
+                <a
+                  href="https://www.tiktok.com/@haybahcollections"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 bg-brand-maroon rounded-full flex items-center justify-center hover:bg-brand-gold transition-all duration-300 group transform hover:scale-110"
                   aria-label="Follow us on TikTok"
@@ -106,16 +106,15 @@ export default function Footer() {
         >
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm mb-4 md:mb-0">
-              © 2024 Haybah Collections. All rights reserved.
+              &copy; 2025 Haybah Collections. All rights reserved.
             </p>
             <div className="flex space-x-6 text-sm">
               <a href="/privacy" className="text-gray-400 hover:text-brand-gold transition-colors">Privacy Policy</a>
               <a href="/terms" className="text-gray-400 hover:text-brand-gold transition-colors">Terms of Service</a>
-              <a href="/admin" className="text-gray-400 hover:text-brand-gold transition-colors opacity-0 hover:opacity-100" title="Admin Access">.</a>
             </div>
           </div>
         </motion.div>
       </div>
     </footer>
   )
-} 
+}

@@ -19,6 +19,11 @@ interface Order {
     name: string
     email: string
     phone: string
+    addressLine1?: string
+    addressLine2?: string
+    addressLine3?: string
+    city?: string
+    postcode?: string
   }
   items: Array<{
     name: string
@@ -31,6 +36,8 @@ interface Order {
     total: number
   }
   status: string
+  paymentStatus?: string
+  stripeSessionId?: string
   priority: string
   createdAt: string
   notes?: string
@@ -107,6 +114,8 @@ export default function AdminOrders() {
         items,
         pricing,
         status,
+        paymentStatus,
+        stripeSessionId,
         priority,
         createdAt,
         notes
@@ -480,21 +489,50 @@ export default function AdminOrders() {
                     </div>
                     
                     <div>
+                      <p className="text-sm font-medium text-gray-500">Shipping Address</p>
+                      {order.customerInfo.addressLine1 ? (
+                        <>
+                          <p className="text-sm text-gray-900">{order.customerInfo.addressLine1}</p>
+                          {order.customerInfo.addressLine2 && (
+                            <p className="text-sm text-gray-900">{order.customerInfo.addressLine2}</p>
+                          )}
+                          <p className="text-sm text-gray-900">
+                            {order.customerInfo.city} {order.customerInfo.postcode}
+                          </p>
+                        </>
+                      ) : (
+                        <p className="text-sm text-red-600 italic">⚠️ Address not captured</p>
+                      )}
+                    </div>
+                    
+                    <div>
                       <p className="text-sm font-medium text-gray-500">Order Details</p>
                       <p className="text-gray-900">£{order.pricing.total}</p>
                       <p className="text-sm text-gray-600">
                         {new Date(order.createdAt).toLocaleDateString('en-GB')}
                       </p>
+                      <p className={`text-xs font-medium mt-1 ${
+                        order.paymentStatus === 'succeeded' 
+                          ? 'text-green-600' 
+                          : order.paymentStatus === 'pending'
+                          ? 'text-yellow-600'
+                          : 'text-red-600'
+                      }`}>
+                        Payment: {order.paymentStatus || 'unknown'}
+                      </p>
+                      {!order.stripeSessionId && order.paymentStatus === 'pending' && (
+                        <p className="text-xs text-red-600 italic mt-1">⚠️ Payment not completed</p>
+                      )}
                     </div>
-                    
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">Items</p>
-                      {order.items.map((item, index) => (
-                        <p key={index} className="text-sm text-gray-900">
-                          {item.name} - {item.color} ({item.size}) x{item.qty}
-                        </p>
-                      ))}
-                    </div>
+                  </div>
+                  
+                  <div>
+                    <p className="text-sm font-medium text-gray-500 mb-2">Items</p>
+                    {order.items.map((item, index) => (
+                      <p key={index} className="text-sm text-gray-900">
+                        {item.name} - {item.color} ({item.size}) x{item.qty}
+                      </p>
+                    ))}
                   </div>
                 </div>
                 

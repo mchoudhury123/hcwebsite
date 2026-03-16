@@ -12,7 +12,7 @@ export function urlForImage(source: any, width: number = 400, height: number = 6
     .image(source)
     .width(width)
     .height(height)
-    .fit('crop')
+    .fit('max') // Use 'max' to prevent over-cropping, respects hotspot
     .quality(90)
     .auto('format')
     .url()
@@ -27,7 +27,7 @@ export function urlForProduct(source: any) {
     .image(source)
     .width(800)
     .height(1200)
-    .fit('crop')
+    .fit('max') // Use 'max' to prevent over-cropping, respects hotspot
     .quality(90)
     .dpr(2)
     .auto('format')
@@ -40,7 +40,7 @@ export function urlForHighQuality(source: any, width: number = 1200, height: num
     .image(source)
     .width(width)
     .height(height)
-    .fit('crop')
+    .fit('max') // Use 'max' to prevent over-cropping, respects hotspot
     .quality(95)
     .dpr(2)
     .auto('format')

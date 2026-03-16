@@ -15,6 +15,7 @@ module.exports = {
         'brand-cream': '#F8F4F0',
         'brand-dark': '#2C1810',
         'brand-light': '#FDFBF8',
+        'brand-muted': '#F7F7F5',
       },
       fontFamily: {
         'serif': ['var(--font-playfair)', 'serif'],

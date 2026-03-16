@@ -1,33 +1,39 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Menu, X, ShoppingBag } from 'lucide-react'
+import { Menu, X, ShoppingBag, Heart } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useCartStore } from '../lib/cart'
+import { useWishlistStore } from '../lib/wishlist'
 import CartPanel from './CartPanel'
+import WishlistPanel from './WishlistPanel'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isCartOpen, setIsCartOpen] = useState(false)
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false)
   const [isHydrated, setIsHydrated] = useState(false)
   const { items, getItemCount } = useCartStore()
+  const { getCount: getWishlistCount } = useWishlistStore()
   const itemCount = getItemCount()
+  const wishlistCount = getWishlistCount()
 
   // Ensure hydration is complete before rendering cart state
   useEffect(() => {
     setIsHydrated(true)
   }, [])
 
-  // Listen for cart panel open events
+  // Listen for cart and wishlist panel open events
   useEffect(() => {
-    const handleOpenCart = () => {
-      setIsCartOpen(true)
-    }
+    const handleOpenCart = () => setIsCartOpen(true)
+    const handleOpenWishlist = () => setIsWishlistOpen(true)
 
     window.addEventListener('openCartPanel', handleOpenCart)
-    
+    window.addEventListener('openWishlistPanel', handleOpenWishlist)
+
     return () => {
       window.removeEventListener('openCartPanel', handleOpenCart)
+      window.removeEventListener('openWishlistPanel', handleOpenWishlist)
     }
   }, [])
 
@@ -97,18 +103,29 @@ export default function Header() {
             <a href="/" className="flex items-center">
               <div className="text-center">
                 <h1 className="text-lg sm:text-xl font-serif text-brand-maroon">Haybah Collections</h1>
-                <p className="text-xs text-brand-dark hidden sm:block">Luxury Abayas & Islamic Fashion</p>
+                <p className="text-xs text-brand-dark hidden sm:block">Luxury Abayas &amp; Islamic Fashion</p>
               </div>
             </a>
           </motion.div>
 
-          {/* Right side - Cart Icon */}
+          {/* Right side - Wishlist & Cart Icons */}
           <motion.div
-            className="flex items-center justify-end"
+            className="flex items-center justify-end gap-1"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
           >
+            <button
+              onClick={() => setIsWishlistOpen(!isWishlistOpen)}
+              className="relative p-2 text-brand-dark hover:text-brand-maroon transition-colors"
+            >
+              <Heart size={20} className="sm:w-6 sm:h-6" />
+              {isHydrated && wishlistCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-brand-gold text-white text-xs rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center font-bold">
+                  {wishlistCount > 99 ? '99+' : wishlistCount}
+                </span>
+              )}
+            </button>
             <button
               onClick={() => setIsCartOpen(!isCartOpen)}
               className="relative p-2 text-brand-dark hover:text-brand-maroon transition-colors"
@@ -175,13 +192,10 @@ export default function Header() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            {/* Backdrop */}
-            <div 
+            <div
               className="absolute inset-0 bg-black/50"
               onClick={() => setIsCartOpen(false)}
             />
-            
-            {/* Cart Panel */}
             <motion.div
               className="absolute right-0 top-0 h-full w-full max-w-sm sm:max-w-md bg-white shadow-2xl"
               initial={{ x: '100%' }}
@@ -193,7 +207,32 @@ export default function Header() {
             </motion.div>
           </motion.div>
         )}
+
+        {/* Wishlist Slide-in Panel */}
+        {isWishlistOpen && (
+          <motion.div
+            className="fixed inset-0 z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div
+              className="absolute inset-0 bg-black/50"
+              onClick={() => setIsWishlistOpen(false)}
+            />
+            <motion.div
+              className="absolute right-0 top-0 h-full w-full max-w-sm sm:max-w-md bg-white shadow-2xl"
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+            >
+              <WishlistPanel onClose={() => setIsWishlistOpen(false)} />
+            </motion.div>
+          </motion.div>
+        )}
       </div>
     </header>
   )
-} 
+}

@@ -6,6 +6,8 @@ import { motion } from 'framer-motion'
 import { urlForProduct } from '@/lib/sanity.image'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import ProductRating from './ProductRating'
+import WishlistButton from './WishlistButton'
 
 interface RelatedProductsProps {
   products: any[]
@@ -57,6 +59,9 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
                     </div>
                   )}
 
+                  {/* Wishlist Button */}
+                  <WishlistButton product={product} imageUrl={product.images?.[0] ? urlForProduct(product.images[0]) : ''} />
+
                   {/* Badges */}
                   <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5">
                     {isOnSale && (
@@ -94,6 +99,8 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
                       </span>
                     )}
                   </div>
+
+                  <ProductRating slug={product.slug.current} />
                 </div>
               </Link>
             </motion.div>

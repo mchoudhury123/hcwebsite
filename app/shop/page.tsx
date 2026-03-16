@@ -43,7 +43,7 @@ export default async function ShopPage() {
         <section className="section-padding bg-white">
           <div className="container-custom">
             <Suspense fallback={<div>Loading shop...</div>}>
-              <ShopClient 
+              <ShopClient
                 initialCollections={collections || []}
                 initialSizes={uniqueSizes || []}
                 initialColors={uniqueColors || []}
@@ -65,4 +65,3 @@ export default async function ShopPage() {
     )
   }
 }
-

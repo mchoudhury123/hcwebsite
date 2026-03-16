@@ -49,6 +49,7 @@ export async function POST(request: NextRequest) {
         console.log('Amount Total:', session.amount_total)
         console.log('Payment Status:', session.payment_status)
         console.log('Metadata:', session.metadata)
+        console.log('Shipping Details:', session.shipping_details)
         
         // Update order status in Sanity
         const orderId = session.metadata.orderId
@@ -64,22 +65,49 @@ export async function POST(request: NextRequest) {
         console.log('Promo Code:', promoCode)
         
         if (orderId && sanityOrderId) {
+          // Extract shipping address from Stripe
+          const shippingDetails = session.shipping_details || session.shipping
+          const shippingAddress = shippingDetails?.address || {}
+          
+          // Prepare update object
+          const updateData: any = {
+            status: 'processing',
+            paymentStatus: 'succeeded',
+            stripeSessionId: session.id,
+            stripeCustomerId: session.customer,
+            customerName: customerName,
+            customerEmail: customerEmail,
+            promoCode: promoCode,
+            updatedAt: new Date().toISOString(),
+          }
+          
+          // Add shipping address to customerInfo if available
+          if (shippingAddress && Object.keys(shippingAddress).length > 0) {
+            updateData['customerInfo.addressLine1'] = shippingAddress.line1 || ''
+            updateData['customerInfo.addressLine2'] = shippingAddress.line2 || ''
+            updateData['customerInfo.city'] = shippingAddress.city || ''
+            updateData['customerInfo.postcode'] = shippingAddress.postal_code || ''
+            
+            // Update name from shipping if available
+            if (shippingDetails?.name) {
+              updateData['customerInfo.name'] = shippingDetails.name
+            }
+            
+            console.log('Saving shipping address:', {
+              line1: shippingAddress.line1,
+              line2: shippingAddress.line2,
+              city: shippingAddress.city,
+              postcode: shippingAddress.postal_code
+            })
+          }
+          
           // Update order status
           await sanityClient
             .patch(sanityOrderId)
-            .set({
-              status: 'processing',
-              paymentStatus: 'succeeded',
-              stripeSessionId: session.id,
-              stripeCustomerId: session.customer,
-              customerName: customerName,
-              customerEmail: customerEmail,
-              promoCode: promoCode,
-              updatedAt: new Date().toISOString(),
-            })
+            .set(updateData)
             .commit()
 
-          console.log(`Order ${orderId} marked as successful in Sanity`)
+          console.log(`Order ${orderId} marked as successful in Sanity with shipping address`)
           console.log('=== END CHECKOUT SESSION COMPLETED ===')
           
           // Note: Stripe automatically sends receipt email to customer

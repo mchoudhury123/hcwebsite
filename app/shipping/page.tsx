@@ -1,162 +1,116 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { ArrowLeft, Truck, Clock, MapPin, Package } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 
 export default function ShippingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-cream to-white">
-      <div className="container-custom py-12">
-        {/* Header */}
-        <motion.div
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <Link 
+    <div className="min-h-screen bg-white">
+      {/* Header */}
+      <section className="border-b border-gray-100 py-12 sm:py-16">
+        <div className="container-custom text-center">
+          <Link
             href="/"
-            className="inline-flex items-center text-brand-maroon hover:text-brand-gold transition-colors mb-6"
+            className="inline-flex items-center text-xs tracking-wider uppercase text-gray-400 hover:text-brand-maroon transition-colors mb-6"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft className="w-3.5 h-3.5 mr-1.5" />
             Back to Home
           </Link>
-          
-          <h1 className="text-4xl md:text-5xl font-serif text-brand-dark mb-4">
+
+          <h1 className="text-3xl sm:text-4xl font-serif text-gray-900 mb-3">
             Shipping Information
           </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-sm text-gray-500 max-w-lg mx-auto">
             Everything you need to know about our shipping policies and delivery options
           </p>
-        </motion.div>
+        </div>
+      </section>
 
+      <div className="container-custom py-10 sm:py-14 max-w-3xl mx-auto">
         {/* Shipping Options */}
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
-          <motion.div
-            className="bg-white rounded-lg shadow-elegant p-8"
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <div className="flex items-center mb-6">
-              <Truck className="w-8 h-8 text-brand-gold mr-3" />
-              <h2 className="text-2xl font-serif text-brand-dark">UK Delivery</h2>
-            </div>
-                          <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Standard UK Delivery (2-3 weeks)</span>
-                  <span className="font-semibold text-brand-dark">£4.99</span>
-                </div>
-                <div className="p-3 bg-brand-cream rounded-lg">
-                  <p className="text-sm text-brand-maroon">
-                    <strong>Please note:</strong> All UK orders currently have a delivery time of 2-3 weeks due to high demand.
-                  </p>
-                </div>
-                <div className="border-t pt-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-brand-gold font-medium">Free Delivery on orders over £75</span>
-                    <span className="text-brand-gold font-semibold">FREE</span>
-                  </div>
+        <div className="grid md:grid-cols-2 gap-6 mb-10">
+          <div className="border border-gray-100 p-5">
+            <h2 className="text-sm font-medium tracking-wide uppercase text-gray-900 mb-4">UK Delivery</h2>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-500">Standard UK Delivery (2-3 weeks)</span>
+                <span className="font-medium text-gray-900">&pound;4.99</span>
+              </div>
+              <div className="bg-brand-muted p-3">
+                <p className="text-xs text-gray-500">
+                  <strong className="text-gray-700">Please note:</strong> All UK orders currently have a delivery time of 2-3 weeks due to high demand.
+                </p>
+              </div>
+              <div className="border-t border-gray-100 pt-3">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-brand-maroon font-medium">Free delivery on orders over &pound;75</span>
+                  <span className="text-brand-maroon font-medium">FREE</span>
                 </div>
               </div>
-          </motion.div>
-
-          <motion.div
-            className="bg-white rounded-lg shadow-elegant p-8"
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-          >
-            <div className="flex items-center mb-6">
-              <MapPin className="w-8 h-8 text-brand-gold mr-3" />
-              <h2 className="text-2xl font-serif text-brand-dark">International</h2>
             </div>
-            <div className="space-y-4">
-              <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <p className="text-gray-700 font-medium mb-2">
+          </div>
+
+          <div className="border border-gray-100 p-5">
+            <h2 className="text-sm font-medium tracking-wide uppercase text-gray-900 mb-4">International</h2>
+            <div className="space-y-3">
+              <div className="bg-gray-50 p-3 border border-gray-100">
+                <p className="text-sm font-medium text-gray-700 mb-1">
                   We currently do not ship internationally
                 </p>
-                <p className="text-gray-600">
-                  International shipping is planned for the future. We're working on expanding our delivery services to reach customers worldwide.
+                <p className="text-xs text-gray-500">
+                  International shipping is planned for the future. We&rsquo;re working on expanding our delivery services.
                 </p>
               </div>
-              <div className="border-t pt-4">
-                <p className="text-sm text-gray-600">
-                  Sign up for our newsletter to be notified when international shipping becomes available.
-                </p>
-              </div>
+              <p className="text-xs text-gray-400">
+                Sign up for our newsletter to be notified when international shipping becomes available.
+              </p>
             </div>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Processing & Important Info */}
-        <div className="grid md:grid-cols-2 gap-8">
-          <motion.div
-            className="bg-white rounded-lg shadow-elegant p-8"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            <div className="flex items-center mb-6">
-              <Clock className="w-8 h-8 text-brand-gold mr-3" />
-              <h2 className="text-2xl font-serif text-brand-dark">Processing Time</h2>
-            </div>
-            <div className="space-y-4">
-              <p className="text-gray-600">
-                All orders have an estimated delivery time of <strong>2-3 weeks</strong>.
+        {/* Processing & Packaging */}
+        <div className="grid md:grid-cols-2 gap-6 mb-10">
+          <div className="border border-gray-100 p-5">
+            <h2 className="text-sm font-medium tracking-wide uppercase text-gray-900 mb-4">Processing Time</h2>
+            <div className="space-y-3 text-xs text-gray-500 leading-relaxed">
+              <p>
+                All orders have an estimated delivery time of <strong className="text-gray-700">2-3 weeks</strong>.
               </p>
-              <p className="text-gray-600">
+              <p>
                 Orders placed after 2 PM on Friday will be processed on the following Monday.
               </p>
-              <p className="text-gray-600">
+              <p>
                 During peak seasons (Eid, Ramadan), processing may take additional time.
               </p>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            className="bg-white rounded-lg shadow-elegant p-8"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-          >
-            <div className="flex items-center mb-6">
-              <Package className="w-8 h-8 text-brand-gold mr-3" />
-              <h2 className="text-2xl font-serif text-brand-dark">Packaging</h2>
-            </div>
-            <div className="space-y-4">
-              <p className="text-gray-600">
+          <div className="border border-gray-100 p-5">
+            <h2 className="text-sm font-medium tracking-wide uppercase text-gray-900 mb-4">Packaging</h2>
+            <div className="space-y-3 text-xs text-gray-500 leading-relaxed">
+              <p>
                 All items are carefully packaged in our signature Haybah Collections packaging.
               </p>
-              <p className="text-gray-600">
+              <p>
                 Delicate items like chiffon abayas are wrapped in tissue paper for extra protection.
               </p>
-              <p className="text-gray-600">
+              <p>
                 We use eco-friendly packaging materials wherever possible.
               </p>
             </div>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Contact Section */}
-        <motion.div
-          className="text-center mt-12 p-8 bg-brand-maroon text-white rounded-lg"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-        >
-          <h3 className="text-2xl font-serif mb-4">Need Help with Your Order?</h3>
-          <p className="mb-6">
-            Our customer service team is here to help with any shipping questions.
-          </p>
+        {/* Contact */}
+        <div className="border-t border-gray-100 pt-8 text-center">
+          <p className="text-sm text-gray-500 mb-4">Need help with your order?</p>
           <Link
             href="/contact"
-            className="inline-block bg-brand-gold text-brand-dark px-8 py-3 rounded-full font-medium hover:bg-white transition-colors"
+            className="inline-block bg-brand-maroon hover:bg-brand-burgundy text-white text-xs tracking-[0.15em] uppercase px-6 py-3 transition-colors"
           >
             Contact Us
           </Link>
-        </motion.div>
+        </div>
       </div>
     </div>
   )

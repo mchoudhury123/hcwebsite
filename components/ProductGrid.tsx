@@ -8,6 +8,8 @@ import { urlForProduct } from '../lib/sanity.image'
 import { SanityProductWithVariants } from '../app/lib/sanity.server'
 import { useCartStore } from '../lib/cart'
 import QuickAddButton from './QuickAddButton'
+import ProductRating from './ProductRating'
+import WishlistButton from './WishlistButton'
 
 interface ProductGridProps {
   products: SanityProductWithVariants[]
@@ -102,6 +104,9 @@ export default function ProductGrid({
                       )}
                     </div>
 
+                    {/* Wishlist Button */}
+                    <WishlistButton product={product} imageUrl={product.images?.[0] ? urlForProduct(product.images[0]) : ''} />
+
                     {/* Quick Add Overlay Button */}
                     {showCartButton && hasStock && (
                       <div className="absolute bottom-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -151,6 +156,8 @@ export default function ProductGrid({
                       </span>
                     )}
                   </div>
+
+                  <ProductRating slug={product.slug.current} />
                 </div>
               </motion.div>
             )
