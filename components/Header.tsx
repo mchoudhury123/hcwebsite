@@ -41,7 +41,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 shadow-elegant" style={{ backgroundColor: '#EDE8E1' }}>
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10">
-        <div className="grid items-center h-20 sm:h-24" style={{ gridTemplateColumns: '1fr 10fr 1fr' }}>
+        <div className="grid grid-cols-3 items-center h-24 sm:h-28">
           {/* Left side - Navigation (Desktop) & Menu Button (Mobile) */}
           <div className="flex items-center justify-start">
             {/* Desktop Navigation */}
@@ -103,11 +103,11 @@ export default function Header() {
           >
             <a href="/" className="flex items-center">
               <Image
-                src="/newlogo.png"
+                src="/newlogotransparent.png"
                 alt="Haybah Collections"
-                width={500}
-                height={100}
-                className="h-16 sm:h-20 w-auto"
+                width={400}
+                height={80}
+                className="max-h-20 sm:max-h-[6rem] w-auto object-contain"
                 priority
               />
             </a>
