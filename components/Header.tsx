@@ -105,9 +105,9 @@ export default function Header() {
               <Image
                 src="/newlogo.png"
                 alt="Haybah Collections"
-                width={200}
-                height={48}
-                className="h-10 sm:h-12 w-auto"
+                width={300}
+                height={64}
+                className="h-12 sm:h-14 w-auto"
                 priority
               />
             </a>
