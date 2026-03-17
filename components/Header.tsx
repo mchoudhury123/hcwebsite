@@ -102,13 +102,11 @@ export default function Header() {
             transition={{ duration: 0.6, delay: 0.3 }}
           >
             <a href="/" className="flex items-center">
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src="/newlogo.svg"
                 alt="Haybah Collections"
-                width={200}
-                height={48}
                 className="h-10 sm:h-12 w-auto"
-                priority
               />
             </a>
           </motion.div>
