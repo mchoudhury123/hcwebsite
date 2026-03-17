@@ -104,7 +104,7 @@ export default function Reviews() {
   )
 
   return (
-    <section className="py-16 sm:py-20 bg-white">
+    <section className="py-16 sm:py-20 bg-gray-50">
       <div className="container-custom">
         <motion.div
           className="text-center mb-10"
@@ -145,7 +145,7 @@ export default function Reviews() {
               {currentReviews.map((review, index) => (
                 <motion.div
                   key={`${currentPage}-${review.id}`}
-                  className="border border-gray-100 p-5 sm:p-6 flex flex-col"
+                  className="border border-gray-100 bg-white p-5 sm:p-6 flex flex-col"
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}
