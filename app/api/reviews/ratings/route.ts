@@ -38,7 +38,7 @@ export async function GET() {
     }
 
     const response = NextResponse.json(ratings)
-    response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=120')
+    response.headers.set('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=30')
     return response
   } catch (error) {
     console.error('Error fetching ratings:', error)

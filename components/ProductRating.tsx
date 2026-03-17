@@ -9,15 +9,21 @@ interface RatingsData {
 
 let cachedRatings: RatingsData | null = null
 let fetchPromise: Promise<RatingsData> | null = null
+let cacheTimestamp = 0
+const CACHE_TTL = 30_000 // 30 seconds
 
 async function fetchRatings(): Promise<RatingsData> {
-  if (cachedRatings) return cachedRatings
-  if (fetchPromise) return fetchPromise
+  const now = Date.now()
+  if (cachedRatings && now - cacheTimestamp < CACHE_TTL) return cachedRatings
+  if (fetchPromise && now - cacheTimestamp < CACHE_TTL) return fetchPromise
 
-  fetchPromise = fetch('/api/reviews/ratings')
+  // Cache expired or first fetch — reset and refetch
+  cachedRatings = null
+  fetchPromise = fetch('/api/reviews/ratings', { cache: 'no-store' })
     .then((res) => res.json())
     .then((data) => {
       cachedRatings = data
+      cacheTimestamp = Date.now()
       return data
     })
     .catch(() => {

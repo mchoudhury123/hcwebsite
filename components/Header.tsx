@@ -38,7 +38,7 @@ export default function Header() {
   }, [])
 
   return (
-    <header className="bg-white shadow-elegant sticky top-0 z-50">
+    <header className="sticky top-0 z-50 shadow-elegant" style={{ backgroundColor: '#EDE8E1' }}>
       <div className="container-custom">
         <div className="grid grid-cols-3 items-center h-16 sm:h-20">
           {/* Left side - Navigation (Desktop) & Menu Button (Mobile) */}
@@ -101,10 +101,9 @@ export default function Header() {
             transition={{ duration: 0.6, delay: 0.3 }}
           >
             <a href="/" className="flex items-center">
-              <div className="text-center">
-                <h1 className="text-lg sm:text-xl font-serif text-brand-maroon">Haybah Collections</h1>
-                <p className="text-xs text-brand-dark hidden sm:block">Luxury Abayas &amp; Islamic Fashion</p>
-              </div>
+              <span className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-wide font-[family-name:var(--font-playfair)]" style={{ color: '#4A3728' }}>
+                Haybah Collections
+              </span>
             </a>
           </motion.div>
 
@@ -143,7 +142,7 @@ export default function Header() {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <motion.div
-            className="lg:hidden border-t border-gray-100"
+            className="lg:hidden border-t border-[#DDD8D1]"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}

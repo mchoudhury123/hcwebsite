@@ -5,53 +5,70 @@ import Link from 'next/link'
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[85vh] sm:min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: 'url(/back.jpg)' }}
       >
-        <div className="absolute inset-0 bg-black/30"></div>
+        <div className="absolute inset-0 bg-black/40" />
       </div>
 
       {/* Content */}
-      <div className="container-custom relative z-10 text-center">
-        <motion.div
-          className="max-w-4xl mx-auto"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <div className="mb-6 sm:mb-8">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-serif text-white mb-2 sm:mb-3 drop-shadow-lg leading-tight">
-              ELEGANT
-            </h1>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-serif text-white font-bold mb-4 sm:mb-6 drop-shadow-lg leading-tight">
-              MODESTY
-            </h2>
+      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
+        {/* Slogan words - staggered animation */}
+        <div className="mb-8 sm:mb-10">
+          <motion.p
+            className="text-xs sm:text-sm tracking-[0.4em] uppercase text-white/60 mb-6 sm:mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            Haybah Collections
+          </motion.p>
 
-            {/* Enhanced paragraph with Arabic/Asian cultural references */}
-            <div className="max-w-lg sm:max-w-xl mx-auto space-y-3 sm:space-y-4">
-              <p className="text-base sm:text-lg md:text-xl text-white leading-relaxed drop-shadow-md">
-                Timeless Abaya collections for the modern woman, inspired by the rich heritage of
-                <span className="font-arabic text-brand-gold"> الحضارة الإسلامية</span> (Islamic civilization)
-                and the elegance of <span className="font-arabic text-brand-gold">الثقافة العربية</span> (Arabic culture).
-              </p>
-              <p className="text-sm sm:text-base md:text-lg text-white/90 leading-relaxed drop-shadow-md">
-                Each piece embodies the grace of <span className="font-arabic text-brand-gold">الأناقة</span> (elegance)
-                and the dignity of <span className="font-arabic text-brand-gold">الكرامة</span> (dignity),
-                crafted for women who embrace both tradition and contemporary style.
-              </p>
-            </div>
+          <div className="space-y-1 sm:space-y-2">
+            <motion.h1
+              className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif text-white tracking-tight"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.4 }}
+            >
+              Prestige.
+            </motion.h1>
+            <motion.h1
+              className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif text-white/90 tracking-tight"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.6 }}
+            >
+              Dignity.
+            </motion.h1>
+            <motion.h1
+              className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif italic text-[#C8A882] tracking-tight"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.8 }}
+            >
+              Fashion.
+            </motion.h1>
           </div>
+        </div>
 
+        {/* CTA */}
+        <motion.div
+          className="flex flex-col items-center gap-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.1 }}
+        >
           <Link href="/shop">
             <motion.button
-              className="btn-primary text-base sm:text-lg md:text-xl px-8 sm:px-10 md:px-12 py-3 sm:py-4 md:py-5"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              className="px-10 sm:px-14 py-3.5 sm:py-4 border-2 border-white text-white text-sm sm:text-base tracking-[0.25em] uppercase hover:bg-white hover:text-gray-900 transition-colors duration-300"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              SHOP NOW
+              Shop Collection
             </motion.button>
           </Link>
         </motion.div>
