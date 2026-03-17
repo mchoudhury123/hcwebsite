@@ -1,11 +1,9 @@
 import { Suspense } from 'react'
-import { getFeaturedProducts, getRevalidateTime } from './lib/sanity.server'
-import { urlForProduct } from '../lib/sanity.image'
+import { getFeaturedProducts, getCollections, getRevalidateTime } from './lib/sanity.server'
 
 import Hero from '../components/Hero'
-import JustLanded from '../components/JustLanded'
-import Collections from '../components/Collections'
 import ProductGrid from '../components/ProductGrid'
+import BrandStory from '../components/BrandStory'
 import Reviews from '../components/Reviews'
 import Footer from '../components/Footer'
 
@@ -24,11 +22,14 @@ export async function generateMetadata() {
 // Server-side data fetching
 async function getHomePageData() {
   try {
-    const featuredProducts = await getFeaturedProducts()
-    return { featuredProducts }
+    const [featuredProducts, collections] = await Promise.all([
+      getFeaturedProducts(),
+      getCollections(),
+    ])
+    return { featuredProducts, collections }
   } catch (error) {
     console.error('Error fetching home page data:', error)
-    return { featuredProducts: [] }
+    return { featuredProducts: [], collections: [] }
   }
 }
 
@@ -41,8 +42,8 @@ function ProductGridSkeleton() {
           <div className="h-8 bg-gray-100 rounded animate-pulse mx-auto w-48 mb-3"></div>
           <div className="h-4 bg-gray-100 rounded animate-pulse mx-auto w-72"></div>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-7xl mx-auto">
-          {[...Array(4)].map((_, i) => (
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 md:gap-5 max-w-7xl mx-auto">
+          {[...Array(5)].map((_, i) => (
             <div key={i} className="animate-pulse">
               <div className="aspect-[3/4] bg-gray-100 mb-3"></div>
               <div className="h-3 bg-gray-100 rounded mb-2 w-3/4"></div>
@@ -56,7 +57,7 @@ function ProductGridSkeleton() {
 }
 
 export default async function HomePage() {
-  const { featuredProducts } = await getHomePageData()
+  const { featuredProducts, collections } = await getHomePageData()
 
   return (
     <main className="min-h-screen">
@@ -69,17 +70,18 @@ export default async function HomePage() {
         </p>
       </div>
 
-      <JustLanded />
-      <Collections />
-
       <Suspense fallback={<ProductGridSkeleton />}>
         <ProductGrid
           products={featuredProducts}
-          title="Featured"
+          title="Catalogue"
           subtitle="Our most beloved pieces, crafted with premium materials."
           showCartButton={false}
+          collections={collections.filter((c: any) => c.slug?.current !== 'abayas')}
+          showTabs={true}
         />
       </Suspense>
+
+      <BrandStory />
 
       <Reviews />
 
