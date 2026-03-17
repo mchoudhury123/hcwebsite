@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
       openGraph: {
         title: product.name,
         description: product.description,
-        images: product.images?.map((img: any) => img.asset?.url || img) || [],
+        images: product.images?.filter((img: any) => img.asset).map((img: any) => img.asset?.url || img) || [],
       },
     }
   } catch (error) {
@@ -68,6 +68,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
       console.log('Product not found, redirecting to not-found')
       notFound()
     }
+
+    // Filter out images without a valid asset reference
+    product.images = product.images?.filter((img: any) => img.asset) || []
 
     console.log('Product loaded successfully:', {
       name: product.name,
