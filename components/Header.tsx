@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import { Menu, X, ShoppingBag, Heart } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useCartStore } from '../lib/cart'
@@ -101,9 +102,14 @@ export default function Header() {
             transition={{ duration: 0.6, delay: 0.3 }}
           >
             <a href="/" className="flex items-center">
-              <span className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-wide font-[family-name:var(--font-playfair)]" style={{ color: '#4A3728' }}>
-                Haybah Collections
-              </span>
+              <Image
+                src="/newlogo.svg"
+                alt="Haybah Collections"
+                width={200}
+                height={48}
+                className="h-10 sm:h-12 w-auto"
+                priority
+              />
             </a>
           </motion.div>
 
