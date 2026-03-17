@@ -41,7 +41,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 shadow-elegant" style={{ backgroundColor: '#EDE8E1' }}>
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10">
-        <div className="grid grid-cols-3 items-center h-20 sm:h-24">
+        <div className="grid items-center h-20 sm:h-24" style={{ gridTemplateColumns: '1fr 2fr 1fr' }}>
           {/* Left side - Navigation (Desktop) & Menu Button (Mobile) */}
           <div className="flex items-center justify-start">
             {/* Desktop Navigation */}
@@ -105,9 +105,9 @@ export default function Header() {
               <Image
                 src="/newlogo.png"
                 alt="Haybah Collections"
-                width={400}
-                height={80}
-                className="h-14 sm:h-[4.5rem] w-auto"
+                width={500}
+                height={100}
+                className="h-16 sm:h-20 w-auto"
                 priority
               />
             </a>
