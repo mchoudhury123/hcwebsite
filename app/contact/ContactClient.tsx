@@ -352,7 +352,7 @@ export default function ContactClient() {
               },
               {
                 question: "What is your return policy?",
-                answer: "We offer a 30-day return policy for unworn items in original condition."
+                answer: "We are not currently accepting refunds. No returns or exchanges due to shipping from the UAE."
               },
               {
                 question: "Do you ship internationally?",
