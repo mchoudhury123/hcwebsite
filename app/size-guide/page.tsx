@@ -29,7 +29,7 @@ export default function SizeGuidePage() {
       <div className="container-custom py-10 sm:py-14 max-w-3xl mx-auto">
         {/* Size Chart */}
         <div className="mb-10">
-          <h2 className="text-lg font-serif text-gray-900 mb-4">Abaya Size Chart</h2>
+          <h2 className="text-lg font-serif text-gray-900 mb-4">Adult Abaya Size Chart</h2>
 
           <div className="overflow-x-auto border border-gray-100">
             <table className="w-full text-xs">
@@ -64,6 +64,49 @@ export default function SizeGuidePage() {
               </tbody>
             </table>
           </div>
+        </div>
+
+        {/* Kids Size Chart */}
+        <div className="mb-10">
+          <h2 className="text-lg font-serif text-gray-900 mb-4">Kids Abaya Size Chart</h2>
+
+          <div className="overflow-x-auto border border-gray-100">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-gray-200 bg-gray-50">
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 tracking-wide uppercase">Size</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 tracking-wide uppercase">Age</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 tracking-wide uppercase">Height</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 tracking-wide uppercase">Chest (in)</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 tracking-wide uppercase">Length (in)</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 tracking-wide uppercase">Sleeve (in)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { size: '28', age: '2-3 yrs', height: '35-39"', chest: '21-22', length: '28', sleeve: '13' },
+                  { size: '30', age: '4-5 yrs', height: '39-43"', chest: '22-23', length: '30', sleeve: '14' },
+                  { size: '32', age: '6-7 yrs', height: '43-47"', chest: '24-25', length: '32', sleeve: '15' },
+                  { size: '34', age: '8-9 yrs', height: '47-51"', chest: '26-27', length: '34', sleeve: '16' },
+                  { size: '36', age: '10-11 yrs', height: '51-55"', chest: '28-29', length: '36', sleeve: '17' },
+                  { size: '38', age: '12-13 yrs', height: '55-59"', chest: '30-31', length: '38', sleeve: '18' },
+                ].map((row) => (
+                  <tr key={row.size} className="border-b border-gray-50 hover:bg-gray-50/50">
+                    <td className="py-2.5 px-4 font-medium text-brand-maroon">{row.size}</td>
+                    <td className="py-2.5 px-4 text-gray-500">{row.age}</td>
+                    <td className="py-2.5 px-4 text-gray-500">{row.height}</td>
+                    <td className="py-2.5 px-4 text-gray-500">{row.chest}</td>
+                    <td className="py-2.5 px-4 text-gray-500">{row.length}</td>
+                    <td className="py-2.5 px-4 text-gray-500">{row.sleeve}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <p className="text-[11px] text-gray-400 mt-3 leading-relaxed">
+            Age ranges are a general guide. Children grow at different rates — we recommend measuring height and chest for the most accurate fit.
+          </p>
         </div>
 
         {/* How to Measure */}
