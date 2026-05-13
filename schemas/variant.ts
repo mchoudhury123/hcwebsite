@@ -22,6 +22,12 @@ export default {
       type: 'string',
       options: {
         list: [
+          {title: '28 (Kids)', value: '28'},
+          {title: '30 (Kids)', value: '30'},
+          {title: '32 (Kids)', value: '32'},
+          {title: '34 (Kids)', value: '34'},
+          {title: '36 (Kids)', value: '36'},
+          {title: '38 (Kids)', value: '38'},
           {title: '52', value: '52'},
           {title: '54', value: '54'},
           {title: '56', value: '56'},
