@@ -1,7 +1,14 @@
-'use client'
-
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+
+export const metadata: Metadata = {
+  title: 'Abaya Size Guide',
+  description:
+    'Find your perfect fit with the Haybah Collections size guide, including adult and kids abaya measurements and size charts.',
+  keywords: ['abaya size guide', 'abaya measurements', 'modest fashion sizing', 'kids abaya size chart'],
+  alternates: { canonical: '/size-guide' },
+}
 
 export default function SizeGuidePage() {
   return (

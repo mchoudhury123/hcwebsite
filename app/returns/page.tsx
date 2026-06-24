@@ -1,7 +1,12 @@
-'use client'
-
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+
+export const metadata: Metadata = {
+  title: 'Returns Policy',
+  description: 'Read the Haybah Collections returns and refunds policy before placing your order.',
+  alternates: { canonical: '/returns' },
+}
 
 export default function ReturnsPage() {
   return (

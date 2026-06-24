@@ -1,7 +1,13 @@
-'use client'
-
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+
+export const metadata: Metadata = {
+  title: 'Shipping Information',
+  description: 'Delivery times, shipping costs and dispatch information for Haybah Collections orders.',
+  keywords: ['abaya shipping', 'delivery information', 'haybah collections delivery'],
+  alternates: { canonical: '/shipping' },
+}
 
 export default function ShippingPage() {
   return (

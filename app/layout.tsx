@@ -2,16 +2,25 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { playfair, inter, notoNaskh, fontVariables } from './fonts'
 import Header from '../components/Header'
+import JsonLd from '../components/JsonLd'
 import { Analytics } from "@vercel/analytics/next"
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_LOCALE, TWITTER_HANDLE } from '@/lib/seo'
 
 export const metadata: Metadata = {
-  title: 'Habyah Collections - Luxury Abaya Designs',
-  description: 'Discover our premium collection of elegant, sophisticated Abayas. Luxury modest fashion for the modern woman.',
-  keywords: ['Abaya', 'Modest Fashion', 'Islamic Clothing', 'Luxury Abaya'],
-  authors: [{ name: 'Habyah Collections' }],
-  creator: 'Habyah Collections',
-  publisher: 'Habyah Collections',
-  metadataBase: new URL('https://www.haybahcollections.co.uk'),
+  title: {
+    default: `${SITE_NAME} - Luxury Abaya Designs`,
+    template: `%s - ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  keywords: ['Abaya', 'Abayas UK', 'Modest Fashion', 'Islamic Clothing', 'Luxury Abaya', 'Muslim Women Fashion', SITE_NAME],
+  applicationName: SITE_NAME,
+  authors: [{ name: SITE_NAME }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  metadataBase: new URL(SITE_URL),
+  alternates: {
+    canonical: '/',
+  },
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon.ico',
@@ -19,27 +28,25 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
   openGraph: {
     type: 'website',
-    locale: 'en_GB',
-    url: 'https://habyahcollections.com',
-    title: 'Habyah Collections - Luxury Abaya Designs',
-    description: 'Discover our premium collection of elegant, sophisticated Abayas.',
-    siteName: 'Habyah Collections',
+    locale: SITE_LOCALE,
+    url: SITE_URL,
+    title: `${SITE_NAME} - Luxury Abaya Designs`,
+    description: SITE_DESCRIPTION,
+    siteName: SITE_NAME,
     images: [
       {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Habyah Collections - Luxury Abaya Designs',
+        url: '/newlogo.png',
+        alt: `${SITE_NAME} - Luxury Abaya Designs`,
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Habyah Collections - Luxury Abaya Designs',
-    description: 'Discover our premium collection of elegant, sophisticated Abayas.',
-    images: ['/twitter-image.jpg'],
-    creator: '@habyahcollections',
-    site: '@habyahcollections',
+    title: `${SITE_NAME} - Luxury Abaya Designs`,
+    description: SITE_DESCRIPTION,
+    images: ['/newlogo.png'],
+    creator: TWITTER_HANDLE,
+    site: TWITTER_HANDLE,
   },
   robots: {
     index: true,
@@ -54,6 +61,40 @@ export const metadata: Metadata = {
   },
 }
 
+// Site-wide structured data: identifies the brand (Organization) and enables
+// the sitelinks search box (WebSite) in Google search results.
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': `${SITE_URL}/#organization`,
+  name: SITE_NAME,
+  url: SITE_URL,
+  logo: `${SITE_URL}/newlogo.svg`,
+  description: SITE_DESCRIPTION,
+  sameAs: [
+    'https://www.instagram.com/haybahcollections',
+  ],
+}
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${SITE_URL}/#website`,
+  url: SITE_URL,
+  name: SITE_NAME,
+  description: SITE_DESCRIPTION,
+  publisher: { '@id': `${SITE_URL}/#organization` },
+  inLanguage: 'en-GB',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${SITE_URL}/shop?search={search_term_string}`,
+    },
+    'query-input': 'required name=search_term_string',
+  },
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -62,6 +103,7 @@ export default function RootLayout({
   return (
     <html lang="en" dir="ltr" className={fontVariables}>
       <body className="antialiased">
+        <JsonLd data={[organizationSchema, websiteSchema]} />
         <Header />
         {children}
         <Analytics />

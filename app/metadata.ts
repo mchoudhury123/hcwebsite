@@ -1,39 +1,38 @@
 import { Metadata } from 'next'
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_LOCALE, TWITTER_HANDLE } from '@/lib/seo'
 
 export const siteConfig = {
-  name: 'Habyah Collections',
-  description: 'Luxury Abaya designs and modest fashion for the modern woman.',
-  url: 'https://habyahcollections.com',
-  ogImage: '/og-image.jpg',
-  twitterImage: '/twitter-image.jpg',
-  keywords: ['Abaya', 'Modest Fashion', 'Islamic Clothing', 'Luxury Abaya'],
-  authors: [{ name: 'Habyah Collections' }],
-  creator: 'Habyah Collections',
-  publisher: 'Habyah Collections',
-  metadataBase: new URL('https://habyahcollections.com'),
+  name: SITE_NAME,
+  description: SITE_DESCRIPTION,
+  url: SITE_URL,
+  ogImage: '/newlogo.png',
+  twitterImage: '/newlogo.png',
+  keywords: ['Abaya', 'Abayas UK', 'Modest Fashion', 'Islamic Clothing', 'Luxury Abaya', 'Muslim Women Fashion'],
+  authors: [{ name: SITE_NAME }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  metadataBase: new URL(SITE_URL),
   openGraph: {
     type: 'website',
-    locale: 'en_GB',
-    url: 'https://habyahcollections.com',
-    title: 'Habyah Collections - Luxury Abaya Designs',
-    description: 'Discover our premium collection of elegant, sophisticated Abayas.',
-    siteName: 'Habyah Collections',
+    locale: SITE_LOCALE,
+    url: SITE_URL,
+    title: `${SITE_NAME} - Luxury Abaya Designs`,
+    description: SITE_DESCRIPTION,
+    siteName: SITE_NAME,
     images: [
       {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Habyah Collections - Luxury Abaya Designs',
+        url: '/newlogo.png',
+        alt: `${SITE_NAME} - Luxury Abaya Designs`,
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Habyah Collections - Luxury Abaya Designs',
-    description: 'Discover our premium collection of elegant, sophisticated Abayas.',
-    images: ['/twitter-image.jpg'],
-    creator: '@habyahcollections',
-    site: '@habyahcollections',
+    title: `${SITE_NAME} - Luxury Abaya Designs`,
+    description: SITE_DESCRIPTION,
+    images: ['/newlogo.png'],
+    creator: TWITTER_HANDLE,
+    site: TWITTER_HANDLE,
   },
   robots: {
     index: true,
@@ -52,23 +51,26 @@ export function constructMetadata({
   title,
   description,
   image,
+  canonical,
   noIndex,
 }: {
   title?: string
   description?: string
   image?: string
+  /** Site-relative path (e.g. "/shop") used as the canonical URL for the page. */
+  canonical?: string
   noIndex?: boolean
 } = {}): Metadata {
   return {
-    title: title
-      ? `${title} - ${siteConfig.name}`
-      : siteConfig.name,
+    title: title || siteConfig.name,
     description: description || siteConfig.description,
     keywords: siteConfig.keywords,
     authors: siteConfig.authors,
     creator: siteConfig.creator,
+    ...(canonical ? { alternates: { canonical } } : {}),
     openGraph: {
       ...siteConfig.openGraph,
+      ...(canonical ? { url: canonical } : {}),
       title: title
         ? `${title} - ${siteConfig.name}`
         : siteConfig.openGraph.title,

@@ -5,6 +5,7 @@ import Hero from '../components/Hero'
 import ProductGrid from '../components/ProductGrid'
 import BrandStory from '../components/BrandStory'
 import Reviews from '../components/Reviews'
+import SeoContent from '../components/SeoContent'
 import Footer from '../components/Footer'
 
 // ISR: Revalidate every 10 seconds for testing
@@ -13,9 +14,12 @@ export const revalidate = 10
 // Generate metadata
 export async function generateMetadata() {
   return {
-    title: 'Haybah Collections - Luxury Abayas & Islamic Fashion',
-    description: 'Discover our exclusive collection of premium Abayas, crafted with elegance and sophistication. From classic designs to modern fashion statements.',
-    keywords: 'Abaya, Islamic Fashion, Modest Fashion, Luxury Abayas, Haybah Collections',
+    // `absolute` opts out of the "%s - Haybah Collections" template to avoid
+    // repeating the brand name on the homepage.
+    title: { absolute: 'Haybah Collections | Abayas, Arabic & Islamic Dresses' },
+    description: 'Shop luxury abayas, Arabic dresses and Islamic dresses at Haybah Collections. Premium, elegant modest fashion for women — crafted with care and delivered across the UK.',
+    keywords: 'abaya, abayas, arabic dresses, islamic dresses, islamic clothing, modest dresses, modest fashion, luxury abaya, buy abaya UK, Haybah Collections',
+    alternates: { canonical: '/' },
   }
 }
 
@@ -84,6 +88,8 @@ export default async function HomePage() {
       <BrandStory />
 
       <Reviews />
+
+      <SeoContent />
 
       <Footer />
     </main>

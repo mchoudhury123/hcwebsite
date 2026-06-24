@@ -202,7 +202,7 @@ export default function ProductGrid({
                     {product.images && product.images.length > 0 ? (
                       <Image
                         src={urlForProduct(product.images[0])}
-                        alt={product.name}
+                        alt={`${product.name}${/abaya|dress/i.test(product.name) ? '' : ' abaya'} – Haybah Collections`}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                         sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"

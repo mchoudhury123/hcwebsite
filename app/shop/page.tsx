@@ -1,6 +1,32 @@
 import { Suspense } from 'react'
+import type { Metadata } from 'next'
 import ShopClient from './ShopClient'
 import { client } from '@/lib/sanity'
+
+export const metadata: Metadata = {
+  title: 'Abayas, Arabic & Islamic Dresses',
+  description:
+    'Shop abayas, Arabic dresses and Islamic dresses online at Haybah Collections. Premium, elegant modest fashion for women — classic and contemporary designs in a range of sizes and colours, delivered across the UK.',
+  keywords: [
+    'abaya',
+    'abayas',
+    'buy abaya UK',
+    'arabic dresses',
+    'islamic dresses',
+    'islamic clothing',
+    'modest dresses',
+    'modest fashion',
+    'luxury abaya',
+  ],
+  alternates: { canonical: '/shop' },
+  openGraph: {
+    title: 'Abayas, Arabic & Islamic Dresses - Haybah Collections',
+    description:
+      'Shop abayas, Arabic dresses and Islamic dresses online at Haybah Collections — premium, elegant modest fashion for women.',
+    url: '/shop',
+    type: 'website',
+  },
+}
 
 // Revalidate every 60 seconds
 export const revalidate = 60
@@ -23,9 +49,9 @@ export default async function ShopPage() {
         {/* Hero Section */}
         <section className="bg-gradient-to-r from-brand-maroon to-brand-burgundy text-white py-20">
           <div className="container-custom text-center">
-            <h1 className="text-5xl font-playfair font-bold mb-6">Shop All Products</h1>
+            <h1 className="text-5xl font-playfair font-bold mb-6">Abayas, Arabic &amp; Islamic Dresses</h1>
             <p className="text-xl max-w-2xl mx-auto">
-              Discover our complete collection of premium Abayas, from classic designs to contemporary styles.
+              Shop the full Haybah Collections range of premium abayas and modest Islamic dresses — from classic everyday abayas to contemporary Arabic dress designs, in a range of sizes and colours.
             </p>
           </div>
         </section>

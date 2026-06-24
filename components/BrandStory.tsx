@@ -11,7 +11,7 @@ export default function BrandStory() {
       {/* Full-width background image */}
       <Image
         src="/bottom.jpg"
-        alt="Haybah Collections"
+        alt="Woman wearing a luxury Haybah Collections abaya"
         fill
         className="object-cover object-left"
         sizes="100vw"

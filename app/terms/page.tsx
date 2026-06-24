@@ -1,7 +1,12 @@
-'use client'
-
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+
+export const metadata: Metadata = {
+  title: 'Terms & Conditions',
+  description: 'Read the terms and conditions for shopping with Haybah Collections.',
+  alternates: { canonical: '/terms' },
+}
 
 export default function TermsPage() {
   return (

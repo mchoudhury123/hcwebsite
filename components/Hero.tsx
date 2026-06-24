@@ -28,31 +28,41 @@ export default function Hero() {
           </motion.p>
 
           <div className="space-y-1 sm:space-y-2">
-            <motion.h1
-              className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif text-white tracking-tight"
+            <motion.span
+              className="block text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif text-white tracking-tight"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.4 }}
             >
               Prestige.
-            </motion.h1>
-            <motion.h1
-              className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif text-white/90 tracking-tight"
+            </motion.span>
+            <motion.span
+              className="block text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif text-white/90 tracking-tight"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.6 }}
             >
               Dignity.
-            </motion.h1>
-            <motion.h1
-              className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif italic text-[#C8A882] tracking-tight"
+            </motion.span>
+            <motion.span
+              className="block text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif italic text-[#C8A882] tracking-tight"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.8 }}
             >
               Fashion.
-            </motion.h1>
+            </motion.span>
           </div>
+
+          {/* Keyword-rich, crawlable H1 (one per page) */}
+          <motion.h1
+            className="mt-7 sm:mt-9 text-sm sm:text-lg md:text-xl font-serif tracking-[0.15em] uppercase text-white/85"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.0 }}
+          >
+            Luxury Abayas, Arabic &amp; Islamic Dresses
+          </motion.h1>
         </div>
 
         {/* CTA */}
